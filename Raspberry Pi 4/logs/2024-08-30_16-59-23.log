@@ -1,0 +1,11 @@
+2024-08-30 16:59:25,702 - logging_setup - INFO - Starting command listener...
+2024-08-30 16:59:25,702 - logging_setup - INFO - Connected to MQTT server
+2024-08-30 16:59:38,028 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2024-08-30 17:00:05,779 - logging_setup - INFO - Failed to connect to LIGHT1 at 4C:11:AE:9E:C6:0E. Error: <class 'OSError'>
+2024-08-30 17:00:21,823 - logging_setup - INFO - Connecting to LIGHT1.
+2024-08-30 17:00:21,824 - logging_setup - INFO - Succesfully connected! Sending Wifi information...
+2024-08-30 17:00:25,079 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2024-08-30 17:00:25,079 - logging_setup - INFO - Bluetooth connection closed.
+2024-08-30 17:00:25,203 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2024-08-30 17:00:49,081 - logging_setup - INFO - Change current name LIGHT 1 of LIGHT1 to LAMP LIGHT
+2024-08-30 17:00:58,791 - logging_setup - INFO - Recognized speech: nearby

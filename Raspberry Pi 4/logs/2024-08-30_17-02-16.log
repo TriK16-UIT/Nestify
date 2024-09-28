@@ -1,0 +1,9 @@
+2024-08-30 17:02:17,266 - logging_setup - INFO - Starting command listener...
+2024-08-30 17:02:17,266 - logging_setup - INFO - Connected to MQTT server
+2024-08-30 17:02:17,668 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2024-08-30 17:02:24,317 - logging_setup - INFO - Recognized speech: play harvey
+2024-08-30 17:02:39,702 - logging_setup - INFO - Recognized speech: hey harvey
+2024-08-30 17:02:39,702 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2024-08-30 17:02:39,710 - logging_setup - INFO - Listening for a command...
+2024-08-30 17:02:44,509 - logging_setup - INFO - Recognized command: turn on lamp light
+2024-08-30 17:02:44,511 - logging_setup - INFO - Voice command to on LAMP LIGHT received
