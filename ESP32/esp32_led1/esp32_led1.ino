@@ -3,20 +3,16 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <Preferences.h>
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
 
 #define LEDPIN 4
+#define ATTEMPTS 5
 
-String device_name = "LED1";
-String ssid = "";
-String password = "";
-String host = "";
-String HubID = "";
+String device_id = "LIGHT1";
+String ssid, password, host, HubID, Topic, info;
 String get_info[4];
-int j = 0;
-String info;
-String Topic;
 String previousState = "";
-
 bool bluetooth_disconnect = false;
 long start_millis;
 long timeout = 10000;
@@ -30,12 +26,28 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 Preferences preferences;
 
+// Function Prototypes
+void initBluetooth();
+void disconnectBluetooth();
+void handleBluetoothData();
+void clearBluetoothData();
+void hard_reset();
+bool initWiFi();
+bool initMQTT();
+void MQTTCallback(char* topic, byte* message, unsigned int length);
+void publishStatus();
+
 void setup(){
   Serial.begin(115200);
   pinMode(LEDPIN, OUTPUT);
 
+  //Brownout trigger disabled
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+
   // Initialize preferences
   preferences.begin("wifi-config", false);
+  // For debugging
+  preferences.clear();
 
   // Load stored values
   ssid = preferences.getString("ssid", "");
@@ -44,36 +56,33 @@ void setup(){
   HubID = preferences.getString("HubID", "");
   Topic = preferences.getString("Topic", "");
 
-  if (ssid != "" && password != "" && host != "" && HubID != "" && Topic != "") {
-    stage = WIFI;
-  } else {
-    stage = PAIRING;
-  }
+  stage = (ssid != "" && password != "" && host != "" && HubID != "" && Topic != "") ? WIFI : PAIRING;
 }
 
-void init_bluetooth()
+void initBluetooth()
 {
-  SerialBT.begin(device_name);
-  Serial.printf("");
-  Serial.printf("The device with name \"%s\" is started.\nNow you can pair it with Bluetooth!\n", device_name.c_str());
+  digitalWrite(LEDPIN, HIGH);
+  delay(2000);
+  digitalWrite(LEDPIN, LOW);
+  SerialBT.begin(device_id);
+  Serial.printf("The device with name \"%s\" is started.\nNow you can pair it with Bluetooth!\n", device_id.c_str());
   bluetooth_disconnect = false;
 }
 
-void disconnect_bluetooth()
+void disconnectBluetooth()
 {
-  delay(1000);
-  Serial.println("BT stopping");
   delay(1000);
   SerialBT.flush();
   SerialBT.disconnect();
   SerialBT.end();
-  Serial.println("BT stopped");
+  Serial.println("Bluetooth disconnected.");
   delay(1000);
   bluetooth_disconnect = true;
 }
 
-void handle_bluetooth_data(String info)
+void handleBluetoothData()
 {
+  int j = 0;
   for (auto x : info)
   {
     if (x == '|')
@@ -82,13 +91,13 @@ void handle_bluetooth_data(String info)
       continue;  
     }
     else
-      get_info[j] = get_info[j] + x;
+      get_info[j] += x;
   }
   ssid = get_info[0];
   password = get_info[1];
   host = get_info[2];
   HubID = get_info[3];
-  Topic = HubID + "/" + device_name;
+  Topic = HubID + "/" + device_id;
 
   // Save the values
   preferences.putString("ssid", ssid);
@@ -98,12 +107,29 @@ void handle_bluetooth_data(String info)
   preferences.putString("Topic", Topic);
 }
 
-bool init_wifi()
+void clearBluetoothData() {
+  // Clear stored preferences
+  preferences.clear();
+  ssid = password = host = HubID = Topic = info = "";
+  for (int i = 0; i < 4; i++) {
+    get_info[i] = "";
+  }
+  Serial.println("Bluetooth data and preferences cleared.");
+}
+
+void hard_reset() {
+  disconnectBluetooth();
+  preferences.clear();
+  ESP.restart();
+}
+
+bool initWiFi()
 {
   Serial.println(ssid);
   Serial.println(password);
   start_millis = millis();
   WiFi.begin(ssid, password);
+
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
@@ -119,22 +145,23 @@ bool init_wifi()
   return true;
 }
 
-bool init_mqtt()
+bool initMQTT()
 {
   Serial.println(host);
   client.setServer(host.c_str(), 1883);
-  client.setCallback(callback);
+  client.setCallback(MQTTcallback);
   start_millis = millis();
-  while (client.connected())
+  while (!client.connected())
   {
     if (WiFi.status() != WL_CONNECTED)
     {
       stage = WIFI;
-      break;
+      WiFi.disconnect(true, true);
+      return false;
     }
     delay(500);
     Serial.print(".");
-    if (client.connect("ESP32_client2"))
+    if (client.connect("LIGHT1"))
     {
       Serial.println("MQTT Connected!");
       client.subscribe(Topic.c_str());
@@ -143,20 +170,19 @@ bool init_mqtt()
     if (millis() - start_millis > timeout)
     {
       Serial.println("MQTT Connection Failed!");
-      WiFi.disconnect(true, true);
       return false;
     }
   }
+  return false;
 }
 
-void callback(char* topic, byte* message, unsigned int length) 
+void MQTTcallback(char* topic, byte* message, unsigned int length) 
 {
   String messageTemp;
   
   for (int i = 0; i < length; i++) {
     messageTemp += (char)message[i];
   }
-  Serial.println();
 
   if (String(topic) == String(Topic)) {
       if (messageTemp == "ON")
@@ -184,59 +210,57 @@ void callback(char* topic, byte* message, unsigned int length)
 
 void loop() {
   delay(20);
+  static int wifi_attempts = 0;
+  static int mqtt_attempts = 0;
   switch (stage)
   {
     case PAIRING:
-      if (!bluetooth_disconnect)
-        init_bluetooth();
-      Serial.println("Waiting for SSID provided by server... ");
-      Serial.println("Waiting for password provided by server... ");
-      while (info == "")
-      {
-        if (SerialBT.available()) {
-        info = SerialBT.readString();
-        }
+      if (!bluetooth_disconnect) initBluetooth();
+      Serial.println("Waiting for WiFi data provided by server... ");
+      while (info == "") {
+        if (SerialBT.available()) info = SerialBT.readString();
       }
-      handle_bluetooth_data(info);
-      if (ssid == "" || host == "")
-        stage = PAIRING;
-      else
-        stage = WIFI;
+
+      handleBluetoothData();
+
+      stage = WIFI;
       break;
 
     case WIFI:
-      Serial.println("Waiting for Wi-Fi connection");
-      if (init_wifi())
-      {
-        Serial.println("");
-        Serial.println("Wifi connected");
-        Serial.print("IP address: ");
-        Serial.println(WiFi.localIP());
-        disconnect_bluetooth();
+      Serial.println("Connecting to Wi-Fi...");
+      if (initWiFi()) {
         stage = MQTT;
       }
-      else
-      {
-        Serial.println("Wi-Fi connection failed");
-        delay(2000);
-        stage = PAIRING;  
+      else {
+        wifi_attempts++;
+        if (wifi_attempts >= ATTEMPTS) { // Check if attempts exceed limit
+          SerialBT.print("Error: WiFi connection failed|");
+          hard_reset();
+        }
       }
       break;
 
     case MQTT:
-      Serial.println("Waiting for MQTT connection");
-      if (init_mqtt())
+      Serial.println("Connecting to MQTT...");
+      if (initMQTT()) {
+        SerialBT.print("Success: MQTT connected|");
+        disconnectBluetooth();
         stage = CONNECTED;
-      else
-        stage = PAIRING;
+      }
+      else {
+        mqtt_attempts++;
+        if (mqtt_attempts >= ATTEMPTS) {
+          SerialBT.print("Error: MQTT connection failed|");
+          hard_reset();
+        }
+      }
       break;
 
     case CONNECTED:
       if (!client.connected())
       {
         Serial.println("MQTT Disconnected");
-        WiFi.disconnect(true, true);
-        stage = PAIRING;
+        stage = MQTT;
       }
       client.loop();
 

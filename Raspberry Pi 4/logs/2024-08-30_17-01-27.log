@@ -1,3 +1,0 @@
-2024-08-30 17:01:28,678 - logging_setup - INFO - Starting command listener...
-2024-08-30 17:01:28,678 - logging_setup - INFO - Connected to MQTT server
-2024-08-30 17:01:29,139 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1

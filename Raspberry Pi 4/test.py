@@ -1,16 +1,15 @@
-import speech_recognition as sr
-import sounddevice
-r=sr.Recognizer()
-with sr.Microphone(device_index=1) as source:  # Replace with your correct index
-    print("Say something!")
-    audio = r.listen(source)
+# Example of adding a scenario
+from firebase_handler import FirebaseHandler
+firebase_handler = FirebaseHandler()
 
-with open("test_audio.wav", "wb") as f:
-    f.write(audio.get_wav_data())
+# Define a new scenario
+scenario_id = "Scenario3"
+hub_id = "Hub1"
+name = "Afternoon Routine"
+time = "15:00"
+actions = [
+    {"device_name": "Light 1", "action": "off"}
+]
 
-try:
-    print("You said " + r.recognize_google(audio))
-except sr.UnknownValueError:
-    print("Sphinx could not understand audio")
-except sr.RequestError as e:
-    print(f"Sphinx error; {e}")
+# Add the scenario to Firebase
+firebase_handler.add_scenario(scenario_id, hub_id, name, time, actions)

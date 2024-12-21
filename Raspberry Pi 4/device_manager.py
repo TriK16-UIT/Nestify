@@ -24,31 +24,9 @@ class DeviceManager:
         self.mqtt_handler.add_message_handler('sensor', self.handle_sensor_device_message)
         self.mqtt_handler.add_message_handler('toggle', self.handle_toggle_device_message)
 
+
     def get_list_of_devices(self):
         return self.list_of_devices
-
-    # def add_device_handler(self, device_name, device_type):
-    #     device_ref = self.firebase_handler.get_reference('Device')
-    #     topic = f"{HUB_ID}/{device_name}"
-    #     if device_type == 'toggle':
-    #         new_device_ref = device_ref.child(f'{device_name}')
-    #         new_device_ref.set({
-    #             'HubID': HUB_ID,
-    #             'topic': topic,
-    #             'type': device_type,
-    #             'status': ""
-    #         })
-    #     elif device_type == 'sensor':
-    #         new_device_ref = device_ref.child(f'{device_name}')
-    #         new_device_ref.set({
-    #             'HubID': HUB_ID,
-    #             'topic': topic,
-    #             'type': device_type
-    #         })
-
-    #     self.mqtt_handler.subscribe(topic)
-    #     self.list_of_devices.append(device_name)
-    #     # logger.info(f"Subscribed to topic: {topic}")
 
     def add_device_handler(self, device_id, device_type):
         base_name = ''
@@ -69,7 +47,8 @@ class DeviceManager:
             'HubID': HUB_ID,
             'topic': topic,
             'device_name': unique_device_name,
-            'type': device_type
+            'type': device_type,
+            'room_id': ""
         }
 
         if device_type == 'toggle':
@@ -104,6 +83,9 @@ class DeviceManager:
         data = event.data
         topic = f"{HUB_ID}/{device_id}"
 
+        print(path_parts)
+        print(data)
+
         device_entry = next((entry for entry in self.list_of_devices if entry[0] == device_id), None)
 
         if not device_entry:
@@ -126,3 +108,11 @@ class DeviceManager:
                 self.list_of_devices.remove(device_entry)
                 self.list_of_devices.append((device_id, data))
                 logger.info(f"Change current name {device_entry[1]} of {device_entry[0]} to {data}")
+
+    def control_device(self, action, device_name):
+        print(self.get_list_of_devices())
+        print(device_name)
+        chosen_id, chosen_name = next((id, name) for id, name in self.get_list_of_devices() if name == device_name)
+        logger.info(f"Controlling device {chosen_name} with action {action}")
+        status_ref = self.firebase_handler.get_reference(f'Device/{chosen_id}/status')
+        status_ref.set(action.upper())

@@ -1,0 +1,27 @@
+2024-12-22 04:52:51,108 - logging_setup - INFO - Starting command listener...
+2024-12-22 04:52:51,109 - logging_setup - INFO - Connected to MQTT server
+2024-12-22 04:53:02,177 - logging_setup - INFO - Connecting to LIGHT1.
+2024-12-22 04:53:02,178 - logging_setup - INFO - Succesfully connected! Sending Wifi information...
+2024-12-22 04:53:04,432 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2024-12-22 04:53:04,433 - logging_setup - INFO - Bluetooth connection closed.
+2024-12-22 04:53:04,573 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2024-12-22 04:53:14,509 - logging_setup - INFO - Recognized speech: hey harvey
+2024-12-22 04:53:14,510 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2024-12-22 04:53:17,868 - logging_setup - INFO - Listening for a command...
+2024-12-22 04:53:25,289 - logging_setup - ERROR - Could not understand the audio
+2024-12-22 04:53:36,659 - logging_setup - INFO - Recognized speech: hey harvey
+2024-12-22 04:53:36,660 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2024-12-22 04:53:39,465 - logging_setup - INFO - Listening for a command...
+2024-12-22 04:53:42,274 - logging_setup - INFO - Recognized command: on device
+2024-12-22 04:53:42,275 - logging_setup - INFO - Routing to Gemini Pro API
+2024-12-22 04:53:44,262 - logging_setup - INFO - Gemini Pro API response: Please provide the question or context.  "On device" needs more information to give a short answer.
+
+2024-12-22 04:53:56,827 - logging_setup - INFO - Recognized speech: hey harvey
+2024-12-22 04:53:56,828 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2024-12-22 04:53:59,688 - logging_setup - INFO - Listening for a command...
+2024-12-22 04:54:06,991 - logging_setup - ERROR - Could not understand the audio
+2024-12-22 04:54:20,096 - logging_setup - INFO - Recognized speech: play harvey
+2024-12-22 04:54:32,662 - logging_setup - INFO - Recognized speech: hey harvey
+2024-12-22 04:54:32,663 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2024-12-22 04:54:35,510 - logging_setup - INFO - Listening for a command...
+2024-12-22 04:54:44,245 - logging_setup - INFO - Recognized command: turn on all devices in room one

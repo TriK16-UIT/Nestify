@@ -14,5 +14,5 @@ COMMAND_SCANNING = "scanning"
 COMMAND_CONNECTING = "connecting"
 
 GOOGLE_API_KEY = "AIzaSyDbQhWfbjVtLkPIjEECW9anohvLfo3OYSU"
-PORCUPINE_ACCESS_KEY = "eeLxd7/SpUV6Phn7neVyY9inVztEFRcQYE66Z50oG88aPohXgSfEsQ=="
-HEY_HARVEY_WAKE_WORD_PATH = "models/Hey-Harvey_en_raspberry-pi_v3_0_0.ppn"
+# PORCUPINE_ACCESS_KEY = "eeLxd7/SpUV6Phn7neVyY9inVztEFRcQYE66Z50oG88aPohXgSfEsQ=="
+# HEY_HARVEY_WAKE_WORD_PATH = "models/Hey-Harvey_en_raspberry-pi_v3_0_0.ppn"

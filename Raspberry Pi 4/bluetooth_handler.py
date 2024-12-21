@@ -62,6 +62,9 @@ class BluetoothHandler:
         
         print("Found {} devices.".format(len(nearby_devices)))
 
+        for addr, name in nearby_devices:
+            print("  {} - {}".format(addr, name))
+
         if nearby_devices == 0:
             return ""
 

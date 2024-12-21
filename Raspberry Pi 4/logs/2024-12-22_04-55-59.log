@@ -1,0 +1,20 @@
+2024-12-22 04:56:00,356 - logging_setup - INFO - Starting command listener...
+2024-12-22 04:56:00,357 - logging_setup - INFO - Connected to MQTT server
+2024-12-22 04:56:00,871 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2024-12-22 04:56:07,936 - logging_setup - INFO - Recognized speech: hey harvey
+2024-12-22 04:56:07,936 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2024-12-22 04:56:10,742 - logging_setup - INFO - Listening for a command...
+2024-12-22 04:56:15,764 - logging_setup - INFO - Recognized command: turn on all devices in room one
+2024-12-22 04:56:15,893 - logging_setup - INFO - Controlling device LIGHT 1 with action on
+2024-12-22 04:56:22,908 - logging_setup - INFO - Recognized speech: hey harvey
+2024-12-22 04:56:22,909 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2024-12-22 04:56:25,698 - logging_setup - INFO - Listening for a command...
+2024-12-22 04:56:28,678 - logging_setup - INFO - Recognized command: home device
+2024-12-22 04:56:28,680 - logging_setup - INFO - Routing to Gemini Pro API
+2024-12-22 04:56:29,868 - logging_setup - INFO - Gemini Pro API response: A home device is any electronic device used within a home.
+
+2024-12-22 04:56:39,158 - logging_setup - INFO - Recognized speech: hey harvey
+2024-12-22 04:56:39,158 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2024-12-22 04:56:42,063 - logging_setup - INFO - Listening for a command...
+2024-12-22 04:56:47,417 - logging_setup - INFO - Recognized command: turn off all devices in room one
+2024-12-22 04:56:47,542 - logging_setup - INFO - Controlling device LIGHT 1 with action off

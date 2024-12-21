@@ -1,0 +1,7 @@
+2024-12-22 04:55:11,747 - logging_setup - INFO - Starting command listener...
+2024-12-22 04:55:11,747 - logging_setup - INFO - Connected to MQTT server
+2024-12-22 04:55:12,240 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2024-12-22 04:55:33,319 - logging_setup - INFO - Recognized speech: hey harvey
+2024-12-22 04:55:33,320 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2024-12-22 04:55:36,203 - logging_setup - INFO - Listening for a command...
+2024-12-22 04:55:47,486 - logging_setup - INFO - Recognized command: turn on all devices in room one

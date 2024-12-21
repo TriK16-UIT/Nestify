@@ -1,0 +1,9 @@
+2024-12-22 04:41:30,329 - logging_setup - INFO - Starting command listener...
+2024-12-22 04:41:30,330 - logging_setup - INFO - Connected to MQTT server
+2024-12-22 04:41:45,677 - logging_setup - INFO - Connecting to LIGHT1.
+2024-12-22 04:41:45,678 - logging_setup - INFO - Succesfully connected! Sending Wifi information...
+2024-12-22 04:41:47,981 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2024-12-22 04:41:47,982 - logging_setup - INFO - Bluetooth connection closed.
+2024-12-22 04:41:48,367 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2024-12-22 04:42:00,487 - logging_setup - INFO - Device LIGHT1 deleted
+2024-12-22 04:42:00,530 - logging_setup - INFO - Unsubscribed to Hub1/LIGHT1
