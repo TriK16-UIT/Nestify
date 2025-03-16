@@ -1,0 +1,150 @@
+2025-01-05 17:08:25,116 - oauth2client.client - INFO - Refreshing access_token
+2025-01-05 17:08:25,597 - logging_setup - INFO - Connected to MQTT server
+2025-01-05 17:09:48,288 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2025-01-05 17:10:01,763 - logging_setup - INFO - Found 3 devices.
+2025-01-05 17:10:01,764 - logging_setup - INFO -   A0:A3:B3:EC:DD:36 - LIGHT1
+2025-01-05 17:10:01,764 - logging_setup - INFO -   4C:11:AE:9E:C6:0E - FAN1
+2025-01-05 17:10:01,764 - logging_setup - INFO -   22:22:8D:D8:0F:5D - FPT Play Box +
+2025-01-05 17:10:21,253 - logging_setup - INFO - Connecting to FAN1.
+2025-01-05 17:10:21,254 - logging_setup - INFO - Successfully connected! Sending Wi-Fi information...
+2025-01-05 17:10:25,577 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2025-01-05 17:10:25,578 - logging_setup - INFO - Bluetooth connection closed.
+2025-01-05 17:10:26,224 - logging_setup - INFO - Subscribed to topic: -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:10:26,270 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"status": "OFF", "speed": 10}
+2025-01-05 17:10:44,280 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2025-01-05 17:10:56,478 - logging_setup - INFO - Found 2 devices.
+2025-01-05 17:10:56,478 - logging_setup - INFO -   A0:A3:B3:EC:DD:36 - LIGHT1
+2025-01-05 17:10:56,479 - logging_setup - INFO -   22:22:8D:D8:0F:5D - FPT Play Box +
+2025-01-05 17:11:01,390 - logging_setup - INFO - Connecting to LIGHT1.
+2025-01-05 17:11:01,390 - logging_setup - INFO - Successfully connected! Sending Wi-Fi information...
+2025-01-05 17:11:05,512 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2025-01-05 17:11:05,512 - logging_setup - INFO - Bluetooth connection closed.
+2025-01-05 17:11:06,246 - logging_setup - INFO - Subscribed to topic: -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:11:06,295 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "OFF", "dim": 10, "colour": "#FFFFFF"}
+2025-01-05 17:11:29,215 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"status": "ON"}
+2025-01-05 17:11:29,216 - logging_setup - INFO - Published current status: ON for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:11:30,796 - logging_setup - INFO - Recognized speech: laugh out loud
+2025-01-05 17:11:44,571 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"speed": 42}
+2025-01-05 17:11:44,573 - logging_setup - INFO - Published current speed: 42 for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:11:54,594 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"speed": 100}
+2025-01-05 17:11:54,595 - logging_setup - INFO - Published current speed: 100 for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:12:04,609 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"speed": 0}
+2025-01-05 17:12:04,610 - logging_setup - INFO - Published current speed: 0 for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:12:14,622 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"speed": 46}
+2025-01-05 17:12:14,624 - logging_setup - INFO - Published current speed: 46 for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:12:19,255 - logging_setup - INFO - Recognized speech: run run run run run run run run run run run run run run run run run run song
+2025-01-05 17:12:24,642 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"status": "OFF"}
+2025-01-05 17:12:24,644 - logging_setup - INFO - Published current status: OFF for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:12:34,665 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "ON"}
+2025-01-05 17:12:34,667 - logging_setup - INFO - Published current status: ON for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:12:44,686 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"colour": "#f40101"}
+2025-01-05 17:12:44,688 - logging_setup - INFO - Published current colour: #f40101 for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:12:54,706 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"colour": "#9ef401"}
+2025-01-05 17:12:54,707 - logging_setup - INFO - Published current colour: #9ef401 for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:13:04,722 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"dim": 48}
+2025-01-05 17:13:04,723 - logging_setup - INFO - Published current dim: 48 for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:13:14,742 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"dim": 0}
+2025-01-05 17:13:14,743 - logging_setup - INFO - Published current dim: 0 for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:13:22,095 - logging_setup - INFO - Recognized speech: what does the white white white white
+2025-01-05 17:13:24,756 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"dim": 100}
+2025-01-05 17:13:24,757 - logging_setup - INFO - Published current dim: 100 for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:13:34,770 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "OFF"}
+2025-01-05 17:13:34,772 - logging_setup - INFO - Published current status: OFF for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:13:52,656 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"room_id": "-OFpx877nc5yZ3tfXP2k"}
+2025-01-05 17:13:52,658 - logging_setup - INFO - Published current {'room_id': '-OFpx877nc5yZ3tfXP2k'} for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:14:05,234 - logging_setup - INFO - Recognized speech: ok google
+2025-01-05 17:14:12,923 - logging_setup - INFO - Recognized speech: play win win win win win win win by drake
+2025-01-05 17:14:26,098 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"room_id": "-OFpx877nc5yZ3tfXP2k"}
+2025-01-05 17:14:26,099 - logging_setup - INFO - Published current {'room_id': '-OFpx877nc5yZ3tfXP2k'} for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:14:35,194 - logging_setup - INFO - Recognized speech: play harvey
+2025-01-05 17:14:39,929 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 17:14:39,930 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 17:14:43,502 - logging_setup - INFO - Listening for a command...
+2025-01-05 17:14:47,869 - logging_setup - INFO - Recognized command: turn on light one
+2025-01-05 17:14:50,099 - logging_setup - INFO - Gemni response: {
+  "action": "on",
+  "device": "light 1",
+  "room": null
+}
+2025-01-05 17:14:50,100 - logging_setup - INFO - Controlling device LIGHT 1 with data {'status': 'ON'} from given name
+2025-01-05 17:14:50,404 - logging_setup - INFO - Device LIGHT 1 updated successfully with data: {'status': 'ON'}
+2025-01-05 17:14:56,475 - logging_setup - INFO - Recognized speech: play harvey
+2025-01-05 17:15:00,422 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "ON"}
+2025-01-05 17:15:00,423 - logging_setup - INFO - Published current {'status': 'ON'} for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:15:01,332 - logging_setup - INFO - Recognized speech: play harvey
+2025-01-05 17:15:06,450 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 17:15:06,450 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 17:15:09,432 - logging_setup - INFO - Listening for a command...
+2025-01-05 17:15:13,553 - logging_setup - INFO - Recognized command: turn on fan one
+2025-01-05 17:15:14,379 - logging_setup - INFO - Gemni response: {
+  "action": "on",
+  "device": "fan 1",
+  "room": null
+}
+2025-01-05 17:15:14,381 - logging_setup - INFO - Controlling device FAN 1 with data {'status': 'ON'} from given name
+2025-01-05 17:15:14,707 - logging_setup - INFO - Device FAN 1 updated successfully with data: {'status': 'ON'}
+2025-01-05 17:15:24,289 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 17:15:24,290 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 17:15:24,730 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"status": "ON"}
+2025-01-05 17:15:24,730 - logging_setup - INFO - Published current {'status': 'ON'} for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:15:27,468 - logging_setup - INFO - Listening for a command...
+2025-01-05 17:15:31,065 - logging_setup - INFO - Recognized command: go to facebook
+2025-01-05 17:15:31,655 - logging_setup - INFO - Gemni response: Okay.
+2025-01-05 17:15:38,212 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 17:15:38,213 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 17:15:41,212 - logging_setup - INFO - Listening for a command...
+2025-01-05 17:15:50,548 - logging_setup - INFO - Recognized command: what is facebook
+2025-01-05 17:15:51,233 - logging_setup - INFO - Gemni response: What is Facebook?  (It's a social networking site.)
+2025-01-05 17:16:04,505 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 17:16:04,505 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 17:16:07,524 - logging_setup - INFO - Listening for a command...
+2025-01-05 17:16:11,214 - logging_setup - INFO - Recognized command: turn off fan one
+2025-01-05 17:16:11,997 - logging_setup - INFO - Gemni response: {
+  "action": "off",
+  "device": "fan 1",
+  "room": null
+}
+2025-01-05 17:16:11,998 - logging_setup - INFO - Controlling device FAN 1 with data {'status': 'OFF'} from given name
+2025-01-05 17:16:12,310 - logging_setup - INFO - Device FAN 1 updated successfully with data: {'status': 'OFF'}
+2025-01-05 17:16:20,326 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 17:16:20,326 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 17:16:22,325 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"status": "OFF"}
+2025-01-05 17:16:22,326 - logging_setup - INFO - Published current {'status': 'OFF'} for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:16:23,367 - logging_setup - INFO - Listening for a command...
+2025-01-05 17:16:26,658 - logging_setup - INFO - Recognized command: turn off light one
+2025-01-05 17:16:27,412 - logging_setup - INFO - Gemni response: {
+  "action": "off",
+  "device": "light 1",
+  "room": null
+}
+2025-01-05 17:16:27,413 - logging_setup - INFO - Controlling device LIGHT 1 with data {'status': 'OFF'} from given name
+2025-01-05 17:16:27,751 - logging_setup - INFO - Device LIGHT 1 updated successfully with data: {'status': 'OFF'}
+2025-01-05 17:16:37,763 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "OFF"}
+2025-01-05 17:16:37,765 - logging_setup - INFO - Published current {'status': 'OFF'} for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:17:31,050 - logging_setup - INFO - Recognized speech: i want to get you leaving now
+2025-01-05 17:18:17,021 - logging_setup - INFO - Recognized speech: play john mayer
+2025-01-05 17:18:21,745 - logging_setup - INFO - Recognized speech: has the volume
+2025-01-05 17:18:51,711 - logging_setup - INFO - Recognized speech: is there any other news
+2025-01-05 17:19:31,247 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-8' coro=<run_scheduler() done, defined at /home/tri/Desktop/Home Automation/Threading Hub/scenario_scheduler.py:16> exception=KeyError('status')>
+Traceback (most recent call last):
+  File "/home/tri/Desktop/Home Automation/Threading Hub/scenario_scheduler.py", line 18, in run_scheduler
+    await check_and_execute_scenarios(device_manager, firebase_handler, hub_id)
+  File "/home/tri/Desktop/Home Automation/Threading Hub/scenario_scheduler.py", line 9, in check_and_execute_scenarios
+    if scenario_info['status'] == "ON" and scenario_info['time'] == current_time:
+       ~~~~~~~~~~~~~^^^^^^^^^^
+KeyError: 'status'
+2025-01-05 17:20:01,550 - logging_setup - INFO - Recognized speech: read the bible
+2025-01-05 17:20:16,623 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "ON"}
+2025-01-05 17:20:16,624 - logging_setup - INFO - Published current status: ON for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:20:21,863 - logging_setup - INFO - Recognized speech: turn the alarm
+2025-01-05 17:20:26,637 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"status": "On"}
+2025-01-05 17:20:26,638 - logging_setup - INFO - Published current status: On for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:20:36,643 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"status": "ON"}
+2025-01-05 17:20:36,644 - logging_setup - INFO - Published current status: ON for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:20:38,844 - logging_setup - INFO - Recognized speech: turn on your scenario sound
+2025-01-05 17:20:44,484 - logging_setup - INFO - Recognized speech: what channel does
+2025-01-05 17:20:47,625 - logging_setup - INFO - Recognized speech: what the fuc
+2025-01-05 17:22:09,183 - logging_setup - INFO - Recognized speech: turn off home phone so
+2025-01-05 17:22:25,242 - logging_setup - INFO - Recognized speech: long is the second one
+2025-01-05 17:22:33,762 - logging_setup - INFO - Recognized speech: stop put on

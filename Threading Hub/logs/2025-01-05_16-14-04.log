@@ -1,0 +1,14 @@
+2025-01-05 16:14:05,553 - oauth2client.client - INFO - Refreshing access_token
+2025-01-05 16:14:06,024 - logging_setup - INFO - Connected to MQTT server
+2025-01-05 16:14:06,328 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2025-01-05 16:14:10,754 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 16:14:10,755 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 16:14:13,955 - logging_setup - INFO - Listening for a command...
+2025-01-05 16:14:17,074 - logging_setup - INFO - Recognized command: turn off light one
+2025-01-05 16:14:19,404 - logging_setup - INFO - Gemni response: {
+  "action": "off",
+  "device": "light 1",
+  "room": null
+}
+2025-01-05 16:14:19,405 - logging_setup - INFO - Controlling device LIGHT 1 with data {'status': 'OFF'} from given name
+2025-01-05 16:14:19,520 - logging_setup - INFO - Device LIGHT 1 updated successfully with data: {'status': 'OFF'}

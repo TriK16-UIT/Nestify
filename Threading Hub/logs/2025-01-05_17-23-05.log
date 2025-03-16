@@ -1,0 +1,42 @@
+2025-01-05 17:23:06,396 - oauth2client.client - INFO - Refreshing access_token
+2025-01-05 17:23:07,014 - logging_setup - INFO - Connected to MQTT server
+2025-01-05 17:23:07,849 - logging_setup - INFO - Subscribed to topic: -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:23:07,851 - logging_setup - INFO - Subscribed to topic: -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:23:11,122 - logging_setup - INFO - Recognized speech: what time will the rain noise on
+2025-01-05 17:23:59,515 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"status": "OFF"}
+2025-01-05 17:23:59,518 - logging_setup - INFO - Published current status: OFF for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:24:09,538 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "OFF"}
+2025-01-05 17:24:09,539 - logging_setup - INFO - Published current status: OFF for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:25:20,046 - logging_setup - INFO - Recognized speech: what the fuc
+2025-01-05 17:25:38,518 - logging_setup - INFO - Recognized speech: 40 calendar
+2025-01-05 17:26:08,725 - logging_setup - INFO - Recognized speech: commercial lane
+2025-01-05 17:26:10,004 - logging_setup - INFO - It's 17:26!
+2025-01-05 17:26:10,005 - logging_setup - INFO - Executing scenario: Evening
+2025-01-05 17:26:10,005 - logging_setup - INFO - Controlling device FAN 1 with data {'deviceId': 'FAN1', 'device_name': 'FAN 1', 'speed': 46, 'status': 'ON'} from given ID
+2025-01-05 17:26:10,332 - logging_setup - INFO - Device FAN 1 updated successfully with data: {'deviceId': 'FAN1', 'device_name': 'FAN 1', 'speed': 46, 'status': 'ON'}
+2025-01-05 17:26:10,335 - logging_setup - INFO - Controlling device LIGHT 1 with data {'colour': '#9ef401', 'deviceId': 'LIGHT1', 'device_name': 'LIGHT 1', 'dim': 100, 'status': 'ON'} from given ID
+2025-01-05 17:26:10,638 - logging_setup - INFO - Device LIGHT 1 updated successfully with data: {'colour': '#9ef401', 'deviceId': 'LIGHT1', 'device_name': 'LIGHT 1', 'dim': 100, 'status': 'ON'}
+2025-01-05 17:26:20,349 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"deviceId": "FAN1", "status": "ON"}
+2025-01-05 17:26:20,351 - logging_setup - INFO - Published current {'deviceId': 'FAN1', 'status': 'ON'} for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:26:30,373 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "ON", "deviceId": "LIGHT1"}
+2025-01-05 17:26:30,375 - logging_setup - INFO - Published current {'status': 'ON', 'deviceId': 'LIGHT1'} for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:26:37,308 - logging_setup - INFO - Recognized speech: columbia university
+2025-01-05 17:26:53,894 - logging_setup - INFO - Recognized speech: please open on all the reminder
+2025-01-05 17:27:50,068 - logging_setup - INFO - Recognized speech: how are you
+2025-01-05 17:27:55,997 - logging_setup - INFO - Recognized speech: turn on led one
+2025-01-05 17:28:06,733 - logging_setup - INFO - Recognized speech: turn on my timer
+2025-01-05 17:28:16,186 - logging_setup - INFO - Recognized speech: call led one
+2025-01-05 17:28:37,998 - logging_setup - INFO - Recognized speech: alarm 1:00
+2025-01-05 17:28:43,670 - logging_setup - INFO - Recognized speech: turn on l i g h t
+2025-01-05 17:28:55,566 - logging_setup - INFO - Recognized speech: turn on light one turn on light one
+2025-01-05 17:28:59,105 - logging_setup - INFO - Recognized speech: play england
+2025-01-05 17:29:10,215 - logging_setup - INFO - Recognized speech: turn on light one
+2025-01-05 17:29:27,874 - logging_setup - INFO - Recognized speech: what's the weather
+2025-01-05 17:29:31,474 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "OFF"}
+2025-01-05 17:29:31,476 - logging_setup - INFO - Published current status: OFF for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 17:29:34,513 - logging_setup - INFO - Recognized speech: turn off fan one
+2025-01-05 17:29:42,186 - logging_setup - INFO - Recognized speech: turn off fan one
+2025-01-05 17:29:49,657 - logging_setup - INFO - Recognized speech: turn off fan one
+2025-01-05 17:29:59,304 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/FAN1: {"status": "OFF"}
+2025-01-05 17:29:59,305 - logging_setup - INFO - Published current status: OFF for FAN1 to MQTT topic -O0qUnBd90cvCv0JULl0/FAN1
+2025-01-05 17:30:13,486 - logging_setup - INFO - Recognized speech: play skip song

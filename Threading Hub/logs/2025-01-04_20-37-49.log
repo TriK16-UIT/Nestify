@@ -1,0 +1,18 @@
+2025-01-04 20:37:50,483 - oauth2client.client - INFO - Refreshing access_token
+2025-01-04 20:37:50,976 - logging_setup - INFO - Connected to MQTT server
+2025-01-04 20:37:51,380 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2025-01-04 20:38:00,677 - logging_setup - INFO - Recognized speech: hello
+2025-01-04 20:39:01,722 - logging_setup - INFO - Unsubscribed to topic: Hub1/LIGHT1
+2025-01-04 20:39:01,722 - logging_setup - INFO - Unsubscribed to Hub1/LIGHT1
+2025-01-04 20:39:47,013 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2025-01-04 20:39:58,714 - logging_setup - INFO - Found 2 devices.
+2025-01-04 20:39:58,715 - logging_setup - INFO -   A0:A3:B3:EC:DD:36 - LIGHT1
+2025-01-04 20:39:58,715 - logging_setup - INFO -   22:22:8D:D8:0F:5D - FPT Play Box +
+2025-01-04 20:40:00,205 - logging_setup - INFO - Recognized speech: hello can you hear me
+2025-01-04 20:40:27,762 - logging_setup - INFO - Connecting to LIGHT1.
+2025-01-04 20:40:27,763 - logging_setup - INFO - Successfully connected! Sending Wi-Fi information...
+2025-01-04 20:40:31,564 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2025-01-04 20:40:31,564 - logging_setup - INFO - Bluetooth connection closed.
+2025-01-04 20:40:31,876 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2025-01-04 20:41:30,142 - logging_setup - INFO - Unsubscribed to topic: Hub1/LIGHT1
+2025-01-04 20:41:30,143 - logging_setup - INFO - Unsubscribed to Hub1/LIGHT1

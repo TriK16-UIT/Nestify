@@ -1,0 +1,2 @@
+2025-01-05 16:41:14,768 - oauth2client.client - INFO - Refreshing access_token
+2025-01-05 16:41:15,242 - logging_setup - INFO - Connected to MQTT server

@@ -1,0 +1,24 @@
+2025-01-05 15:14:14,887 - oauth2client.client - INFO - Refreshing access_token
+2025-01-05 15:14:15,460 - logging_setup - INFO - Connected to MQTT server
+2025-01-05 15:14:17,727 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2025-01-05 15:14:28,184 - logging_setup - INFO - Found 1 devices.
+2025-01-05 15:14:28,185 - logging_setup - INFO -   A0:A3:B3:EC:DD:36 - LIGHT1
+2025-01-05 15:14:36,848 - logging_setup - INFO - Connecting to LIGHT1.
+2025-01-05 15:14:36,848 - logging_setup - INFO - Successfully connected! Sending Wi-Fi information...
+2025-01-05 15:14:42,128 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2025-01-05 15:14:42,129 - logging_setup - INFO - Bluetooth connection closed.
+2025-01-05 15:14:42,928 - logging_setup - INFO - Subscribed to topic: -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 15:14:42,975 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "OFF", "dim": "10", "colour": "#FFFFFF"}
+2025-01-05 15:14:48,549 - logging_setup - INFO - Recognized speech: call da
+2025-01-05 15:15:58,422 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "ON"}
+2025-01-05 15:15:58,424 - logging_setup - INFO - Published current status: ON for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 15:16:55,806 - logging_setup - INFO - Recognized speech: new lafayette lafayette
+2025-01-05 15:17:07,027 - logging_setup - INFO - Recognized speech: tell me sooner
+2025-01-05 15:17:21,176 - logging_setup - INFO - Recognized speech: rosalia
+2025-01-05 15:17:33,238 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"colour": "#ffffff"}
+2025-01-05 15:17:33,240 - logging_setup - INFO - Published current colour: #ffffff for LIGHT1 to MQTT topic -O0qUnBd90cvCv0JULl0/LIGHT1
+2025-01-05 15:17:37,314 - logging_setup - INFO - Recognized speech: lamento
+2025-01-05 15:18:11,111 - logging_setup - INFO - Recognized speech: open slidell salon inside the
+2025-01-05 15:18:17,726 - logging_setup - INFO - Recognized speech: oh my god
+2025-01-05 15:19:03,375 - logging_setup - INFO - Recognized speech: you you you you you you you you you you you know
+2025-01-05 15:19:26,560 - logging_setup - INFO - Published to -O0qUnBd90cvCv0JULl0/LIGHT1: {"status": "disconnect"}

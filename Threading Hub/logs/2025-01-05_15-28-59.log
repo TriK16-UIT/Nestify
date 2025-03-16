@@ -1,0 +1,22 @@
+2025-01-05 15:29:00,514 - oauth2client.client - INFO - Refreshing access_token
+2025-01-05 15:29:01,022 - logging_setup - INFO - Connected to MQTT server
+2025-01-05 15:29:14,056 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2025-01-05 15:29:25,439 - logging_setup - INFO - Found 2 devices.
+2025-01-05 15:29:25,440 - logging_setup - INFO -   A0:A3:B3:EC:DD:36 - LIGHT1
+2025-01-05 15:29:25,440 - logging_setup - INFO -   22:22:8D:D8:0F:5D - FPT Play Box +
+2025-01-05 15:29:54,525 - logging_setup - INFO - Connecting to LIGHT1.
+2025-01-05 15:29:54,525 - logging_setup - INFO - Successfully connected! Sending Wi-Fi information...
+2025-01-05 15:30:00,457 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2025-01-05 15:30:00,458 - logging_setup - INFO - Bluetooth connection closed.
+2025-01-05 15:30:00,763 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2025-01-05 15:30:00,815 - logging_setup - INFO - Published to Hub1/LIGHT1: {"status": "OFF", "dim": 10, "colour": "#FFFFFF"}
+2025-01-05 15:30:19,041 - logging_setup - INFO - Published to Hub1/LIGHT1: {"status": "ON"}
+2025-01-05 15:30:19,043 - logging_setup - INFO - Published current status: ON for LIGHT1 to MQTT topic Hub1/LIGHT1
+2025-01-05 15:30:41,150 - logging_setup - INFO - Published to Hub1/LIGHT1: {"dim": 50}
+2025-01-05 15:30:41,152 - logging_setup - INFO - Published current dim: 50 for LIGHT1 to MQTT topic Hub1/LIGHT1
+2025-01-05 15:30:51,165 - logging_setup - INFO - Published to Hub1/LIGHT1: {"dim": 5}
+2025-01-05 15:30:51,166 - logging_setup - INFO - Published current dim: 5 for LIGHT1 to MQTT topic Hub1/LIGHT1
+2025-01-05 15:31:01,483 - logging_setup - INFO - Published to Hub1/LIGHT1: {"dim": 75}
+2025-01-05 15:31:01,484 - logging_setup - INFO - Published current dim: 75 for LIGHT1 to MQTT topic Hub1/LIGHT1
+2025-01-05 15:31:11,503 - logging_setup - INFO - Published to Hub1/LIGHT1: {"dim": 10}
+2025-01-05 15:31:11,505 - logging_setup - INFO - Published current dim: 10 for LIGHT1 to MQTT topic Hub1/LIGHT1

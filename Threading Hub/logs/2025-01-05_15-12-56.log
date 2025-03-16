@@ -1,0 +1,9 @@
+2025-01-05 15:12:56,816 - oauth2client.client - INFO - Refreshing access_token
+2025-01-05 15:12:57,321 - logging_setup - INFO - Connected to MQTT server
+2025-01-05 15:12:59,089 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2025-01-05 15:13:06,930 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2025-01-05 15:13:09,333 - logging_setup - INFO - Found 0 devices.
+2025-01-05 15:13:09,333 - logging_setup - INFO - Found 0 devices.
+2025-01-05 15:13:10,530 - logging_setup - INFO - Recognized speech: play midnight scanner
+2025-01-05 15:13:16,035 - logging_setup - INFO - Recognized speech: resume song
+2025-01-05 15:13:29,763 - logging_setup - INFO - Recognized speech: scanning device

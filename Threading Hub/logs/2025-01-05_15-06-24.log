@@ -1,0 +1,47 @@
+2025-01-05 15:06:25,100 - oauth2client.client - INFO - Refreshing access_token
+2025-01-05 15:06:25,598 - logging_setup - INFO - Connected to MQTT server
+2025-01-05 15:06:46,514 - logging_setup - INFO - Recognized speech: good night tonight
+2025-01-05 15:07:06,976 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 15:07:06,976 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 15:07:10,462 - logging_setup - INFO - Listening for a command...
+2025-01-05 15:07:13,779 - logging_setup - INFO - Recognized command: play facebook
+2025-01-05 15:07:15,913 - logging_setup - INFO - Gemni response: Okay, playing Facebook.
+2025-01-05 15:07:24,536 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 15:07:24,537 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 15:07:27,373 - logging_setup - INFO - Listening for a command...
+2025-01-05 15:07:30,324 - logging_setup - ERROR - Could not understand the audio
+2025-01-05 15:07:38,262 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 15:07:38,262 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 15:07:41,278 - logging_setup - INFO - Listening for a command...
+2025-01-05 15:07:43,983 - logging_setup - INFO - Recognized command: call iphone
+2025-01-05 15:07:44,590 - logging_setup - INFO - Gemni response: Okay, calling iPhone.
+2025-01-05 15:07:55,718 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 15:07:55,718 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 15:07:58,719 - logging_setup - INFO - Listening for a command...
+2025-01-05 15:08:02,375 - logging_setup - INFO - Recognized command: what is facebook
+2025-01-05 15:08:03,025 - logging_setup - INFO - Gemni response: What is Facebook?  It's a social networking site.
+2025-01-05 15:08:56,434 - logging_setup - INFO - Recognized speech: play sirius radio on pandora
+2025-01-05 15:09:11,873 - logging_setup - INFO - Recognized speech: call mom
+2025-01-05 15:09:27,898 - logging_setup - INFO - Recognized speech: evacuation
+2025-01-05 15:09:38,785 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 15:09:38,786 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 15:09:41,934 - logging_setup - INFO - Listening for a command...
+2025-01-05 15:09:45,859 - logging_setup - INFO - Recognized command: what a facebook
+2025-01-05 15:09:46,478 - logging_setup - INFO - Gemni response: What's a Facebook?
+2025-01-05 15:09:55,901 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 15:09:55,901 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 15:09:58,908 - logging_setup - INFO - Listening for a command...
+2025-01-05 15:10:11,494 - logging_setup - INFO - Recognized command: what is facebook what is facebook
+2025-01-05 15:10:12,079 - logging_setup - INFO - Gemni response: What is Facebook?
+2025-01-05 15:10:30,890 - logging_setup - INFO - Recognized speech: hey javi
+2025-01-05 15:10:36,442 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-05 15:10:36,442 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-05 15:10:39,441 - logging_setup - INFO - Listening for a command...
+2025-01-05 15:10:46,465 - logging_setup - INFO - Recognized command: tell me a joke
+2025-01-05 15:10:47,115 - logging_setup - INFO - Gemni response: Why don't scientists trust atoms? 
+
+Because they make up everything!
+2025-01-05 15:11:02,812 - logging_setup - INFO - Recognized speech: weather at 10:30 p.m.
+2025-01-05 15:11:07,984 - logging_setup - INFO - Recognized speech: are you in a full moon
+2025-01-05 15:11:14,755 - logging_setup - INFO - Recognized speech: how long
+2025-01-05 15:12:26,487 - logging_setup - INFO - Recognized speech: yo i went in the us versus

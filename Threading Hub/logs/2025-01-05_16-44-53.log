@@ -1,0 +1,32 @@
+2025-01-05 16:44:54,217 - oauth2client.client - INFO - Refreshing access_token
+2025-01-05 16:44:54,762 - logging_setup - INFO - Connected to MQTT server
+2025-01-05 16:45:04,395 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2025-01-05 16:45:15,706 - logging_setup - INFO - Found 2 devices.
+2025-01-05 16:45:15,707 - logging_setup - INFO -   22:22:8D:D8:0F:5D - FPT Play Box +
+2025-01-05 16:45:15,708 - logging_setup - INFO -   A0:A3:B3:EC:DD:36 - LIGHT1
+2025-01-05 16:45:37,354 - logging_setup - INFO - Connecting to LIGHT1.
+2025-01-05 16:45:37,354 - logging_setup - INFO - Successfully connected! Sending Wi-Fi information...
+2025-01-05 16:45:42,229 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2025-01-05 16:45:42,231 - logging_setup - INFO - Bluetooth connection closed.
+2025-01-05 16:45:42,490 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2025-01-05 16:45:42,535 - logging_setup - INFO - Published to Hub1/LIGHT1: {"status": "OFF", "dim": 10, "colour": "#FFFFFF"}
+2025-01-05 16:46:01,956 - logging_setup - INFO - Wait for scanning Bluetooth Devices
+2025-01-05 16:46:14,146 - logging_setup - INFO - Found 2 devices.
+2025-01-05 16:46:14,147 - logging_setup - INFO -   22:22:8D:D8:0F:5D - FPT Play Box +
+2025-01-05 16:46:14,147 - logging_setup - INFO -   4C:11:AE:9E:C6:0E - FAN1
+2025-01-05 16:46:31,924 - logging_setup - INFO - Connecting to FAN1.
+2025-01-05 16:46:31,925 - logging_setup - INFO - Successfully connected! Sending Wi-Fi information...
+2025-01-05 16:46:35,764 - logging_setup - INFO - Wi-Fi and MQTT setup completed successfully on device
+2025-01-05 16:46:35,764 - logging_setup - INFO - Bluetooth connection closed.
+2025-01-05 16:46:35,989 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-23' coro=<handle_connecting() done, defined at /home/tri/Desktop/Home Automation/Threading Hub/hub.py:19> exception=AttributeError("'tuple' object has no attribute 'startswith'")>
+Traceback (most recent call last):
+  File "/home/tri/Desktop/Home Automation/Threading Hub/hub.py", line 29, in handle_connecting
+    await device_manager.add_device_handler(chosen_device_info['name'], device_type)
+  File "/home/tri/Desktop/Home Automation/Threading Hub/device_manager.py", line 46, in add_device_handler
+    device_count = sum(1 for device in self.list_of_devices if device.startswith(base_name))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/tri/Desktop/Home Automation/Threading Hub/device_manager.py", line 46, in <genexpr>
+    device_count = sum(1 for device in self.list_of_devices if device.startswith(base_name))
+                                                               ^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'startswith'

@@ -1,0 +1,6 @@
+2025-01-04 17:18:35,055 - logging_setup - INFO - Starting command listener...
+2025-01-04 17:18:35,056 - logging_setup - INFO - Connected to MQTT server
+2025-01-04 17:18:41,003 - logging_setup - INFO - Recognized speech: play harvey
+2025-01-04 17:18:51,133 - logging_setup - INFO - Recognized speech: hey harvey
+2025-01-04 17:18:51,133 - logging_setup - INFO - Wake word 'Hey Harvey' detected
+2025-01-04 17:18:54,080 - logging_setup - INFO - Listening for a command...

@@ -1,0 +1,19 @@
+2025-01-04 18:18:49,047 - oauth2client.client - INFO - Refreshing access_token
+2025-01-04 18:18:49,548 - logging_setup - INFO - Connected to MQTT server
+2025-01-04 18:18:49,959 - logging_setup - INFO - Subscribed to topic: Hub1/LIGHT1
+2025-01-04 18:19:04,448 - logging_setup - INFO - Recognized speech: show me the latest picture on motion one
+2025-01-04 18:19:19,315 - logging_setup - INFO - Recognized speech: show me the latest picture of motion one
+2025-01-04 18:19:35,214 - logging_setup - INFO - Recognized speech: get out
+2025-01-04 18:19:45,303 - logging_setup - INFO - Recognized speech: show me the latest picture of my life
+2025-01-04 18:20:04,643 - logging_setup - INFO - Recognized speech: volume 1% volume
+2025-01-04 18:20:20,220 - logging_setup - INFO - Recognized speech: turn down to the morning show me the oldest picture of motion one
+2025-01-04 18:20:50,654 - logging_setup - INFO - It's 18:20!
+2025-01-04 18:20:50,655 - logging_setup - INFO - Executing scenario: Afternoon Routine
+2025-01-04 18:20:50,656 - logging_setup - INFO - Controlling device LIGHT 1 with action ON from given ID
+2025-01-04 18:21:00,805 - logging_setup - INFO - Published current status ON for LIGHT1 to MQTT topic Hub1/LIGHT1
+2025-01-04 18:21:06,577 - logging_setup - INFO - Recognized speech: what the fuc
+2025-01-04 18:21:12,771 - logging_setup - INFO - Recognized speech: hello
+2025-01-04 18:21:24,942 - logging_setup - INFO - Recognized speech: turn it up
+2025-01-04 18:21:29,238 - logging_setup - INFO - Recognized speech: play some michael jackson
+2025-01-04 18:21:38,644 - logging_setup - INFO - Published current status OFF for LIGHT1 to MQTT topic Hub1/LIGHT1
+2025-01-04 18:21:41,851 - logging_setup - INFO - Recognized speech: repeat something else
