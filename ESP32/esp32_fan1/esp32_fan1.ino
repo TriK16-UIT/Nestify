@@ -5,21 +5,20 @@
 #include <Preferences.h>
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
-#include <Adafruit_NeoPixel.h>
 
 #define LEDPIN 4
-#define PIN 2
+#define FANPIN 14
 #define ATTEMPTS 5
-#define NUMPIXELS 8
 
-// LIGHT SETUP
-Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-int dim = 10; // Default brightness (max)
-int r = 255, g = 255, b = 255; // Default color (white)
-String ledState = "OFF"; // Default state is OFF
+// FAN SETUP
+const int pwmFrequency = 5000;
+const int pwmResolution = 8;
+const int pwmChannel = 0;
+int speed = 10;
+String fanState = "OFF";
 
 // DEVICE SETUP
-String device_id = "LIGHT1";
+String device_id = "FAN1";
 String ssid, password, host, HubID, Topic, info;
 String get_info[4];
 bool bluetooth_disconnect = false;
@@ -44,12 +43,16 @@ bool initWiFi();
 bool initMQTT();
 void MQTTCallback(char* topic, byte* message, unsigned int length);
 void publishStatus();
-void setNeoPixelColor(int r, int g, int b);
+void setFanSpeed(int percentage);
 
-void setNeoPixelColor(int r, int g, int b) {
-  for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, pixels.Color(r, g, b));
-  }
+void setFanSpeed(int percentage) {
+  if (percentage < 0) percentage = 0;     // Ensure speed is not below 0%
+  if (percentage > 100) percentage = 100; // Ensure speed is not above 100%
+
+  int pwmValue = map(percentage, 0, 100, 0, 255);
+
+  ledcWrite(pwmChannel, pwmValue);
+
 }
 
 void setup(){
@@ -70,20 +73,19 @@ void setup(){
   host = preferences.getString("host", "");
   HubID = preferences.getString("HubID", "");
   Topic = preferences.getString("Topic", "");
-  dim = preferences.getInt("dim", 10);
-  r = preferences.getInt("r", 255);
-  g = preferences.getInt("g", 255);
-  b = preferences.getInt("b", 255);
-  ledState = preferences.getString("ledState", "OFF");
+  speed = preferences.getInt("speed", 10);
+  fanState = preferences.getString("fanState", "OFF");
 
   stage = (ssid != "" && password != "" && host != "" && HubID != "" && Topic != "") ? WIFI : PAIRING;
 
-  pixels.begin();
-  pixels.setBrightness(dim);
-  setNeoPixelColor(r, g, b);
+  ledcSetup(pwmChannel, pwmFrequency, pwmResolution);
+  ledcAttachPin(FANPIN, pwmChannel);
 
-  if (ledState == "ON") {
-    pixels.show();
+  if (fanState == "ON") {
+    setFanSpeed(speed);
+  }
+  else {
+    setFanSpeed(0);
   }
 }
 
@@ -189,7 +191,7 @@ bool initMQTT()
     }
     delay(500);
     Serial.print(".");
-    if (client.connect("LIGHT1"))
+    if (client.connect("FAN1"))
     {
       Serial.println("MQTT Connected!");
       Serial.println(Topic.c_str());
@@ -228,67 +230,33 @@ void MQTTcallback(char* topic, byte* message, unsigned int length)
       String status = doc["status"].as<String>();
       if (status == "ON") {
         Serial.println("ON");
-        pixels.setBrightness(dim);
-        setNeoPixelColor(r, g, b);
-        pixels.show();
-        ledState = "ON";
-        preferences.putString("ledState", "ON");
+        setFanSpeed(speed);
+        fanState = "ON";
+        preferences.putString("fanState", "ON");
       }
       else if (status == "OFF") {
         Serial.println("OFF");
-        pixels.clear();
-        pixels.show();
-        ledState = "OFF";
-        preferences.putString("ledState", "OFF");
+        setFanSpeed(0);
+        fanState = "OFF";
+        preferences.putString("fanState", "OFF");
       }
       else if (status == "disconnect") {
         Serial.println("disconnect");
-        pixels.clear();
-        pixels.show();
+        setFanSpeed(0);
         preferences.clear();
         ESP.restart();
       }
     }
 
-    if (doc.containsKey("dim")) {
-      dim = doc["dim"].as<int>();
-      Serial.println(dim);
-      pixels.clear();
-      pixels.setBrightness(dim);
-      setNeoPixelColor(r, g, b);
-      if (ledState == "ON") {
-        pixels.show();
+    if (doc.containsKey("speed")) {
+      speed = doc["speed"].as<int>();
+      Serial.println(speed);
+      if (fanState == "ON") {
+        setFanSpeed(speed);
       }
-      preferences.putInt("dim", dim);
-    }
-
-    if (doc.containsKey("colour")) {
-      String colour = doc["colour"].as<String>();
-      Serial.println(colour.c_str());
-      if (colour[0] == '#') {
-        colour.remove(0, 1); // Remove the '#' character
-      }
-      if (colour.length() == 6) {
-        long rgb = strtol(colour.c_str(), NULL, 16);
-        r = (rgb >> 16) & 0xFF;
-        g = (rgb >> 8) & 0xFF;
-        b = rgb & 0xFF;
-
-        pixels.clear();
-        pixels.setBrightness(dim);
-        setNeoPixelColor(r, g, b);
-
-        if (ledState == "ON") {
-          pixels.show();
-        }
-        preferences.putInt("r", r);
-        preferences.putInt("g", g);
-        preferences.putInt("b", b);
-      }
+      preferences.putInt("speed", speed);
     }
   }
-
-  //Similarly add more if statements to check for other subscribed topics 
 }
 
 void loop() {

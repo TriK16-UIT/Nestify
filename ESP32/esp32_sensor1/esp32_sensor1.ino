@@ -5,21 +5,19 @@
 #include <Preferences.h>
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
-#include <Adafruit_NeoPixel.h>
+#include <DHT.h>
+#include <Adafruit_Sensor.h>
 
 #define LEDPIN 4
-#define PIN 2
+#define DHTPIN 2
+#define DHTTYPE DHT11
 #define ATTEMPTS 5
-#define NUMPIXELS 8
 
-// LIGHT SETUP
-Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-int dim = 10; // Default brightness (max)
-int r = 255, g = 255, b = 255; // Default color (white)
-String ledState = "OFF"; // Default state is OFF
+// DHT SETUP
+DHT dht(DHTPIN, DHTTYPE);
 
 // DEVICE SETUP
-String device_id = "LIGHT1";
+String device_id = "SENSOR1";
 String ssid, password, host, HubID, Topic, info;
 String get_info[4];
 bool bluetooth_disconnect = false;
@@ -44,12 +42,18 @@ bool initWiFi();
 bool initMQTT();
 void MQTTCallback(char* topic, byte* message, unsigned int length);
 void publishStatus();
-void setNeoPixelColor(int r, int g, int b);
 
-void setNeoPixelColor(int r, int g, int b) {
-  for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, pixels.Color(r, g, b));
-  }
+void publishStatus(){
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  StaticJsonDocument<200> doc;
+  doc["humid"] = h;
+  doc["temperature"] = t;
+  doc["type"] = "sensor";
+  char jsonBuffer[512];
+  serializeJson(doc, jsonBuffer);
+  client.publish(Topic.c_str(), jsonBuffer);
+  delay(2000);
 }
 
 void setup(){
@@ -70,21 +74,10 @@ void setup(){
   host = preferences.getString("host", "");
   HubID = preferences.getString("HubID", "");
   Topic = preferences.getString("Topic", "");
-  dim = preferences.getInt("dim", 100);
-  r = preferences.getInt("r", 255);
-  g = preferences.getInt("g", 255);
-  b = preferences.getInt("b", 255);
-  ledState = preferences.getString("ledState", "OFF");
-
+ 
   stage = (ssid != "" && password != "" && host != "" && HubID != "" && Topic != "") ? WIFI : PAIRING;
 
-  pixels.begin();
-  pixels.setBrightness(dim);
-  setNeoPixelColor(r, g, b);
-
-  if (ledState == "ON") {
-    pixels.show();
-  }
+  dht.begin();
 }
 
 void initBluetooth()
@@ -189,7 +182,7 @@ bool initMQTT()
     }
     delay(500);
     Serial.print(".");
-    if (client.connect("LIGHT1"))
+    if (client.connect("SENSOR1"))
     {
       Serial.println("MQTT Connected!");
       Serial.println(Topic.c_str());
@@ -226,62 +219,13 @@ void MQTTcallback(char* topic, byte* message, unsigned int length)
 
     if (doc.containsKey("status")) {
       String status = doc["status"].as<String>();
-      if (status == "ON") {
-        Serial.println("ON");
-        pixels.setBrightness(dim);
-        setNeoPixelColor(r, g, b);
-        pixels.show();
-        ledState = "ON";
-        preferences.putString("ledState", "ON");
-      }
-      else if (status == "OFF") {
-        Serial.println("OFF");
-        pixels.setBrightness(0);
-        pixels.show();
-        ledState = "OFF";
-        preferences.putString("ledState", "OFF");
-      }
-      else if (status == "disconnect") {
+      if (status == "disconnect") {
         Serial.println("disconnect");
         preferences.clear();
         ESP.restart();
       }
     }
-
-    if (doc.containsKey("dim")) {
-      dim = doc["dim"].as<int>();
-      Serial.println(dim);
-      if (ledState == "ON") {
-        pixels.setBrightness(dim);
-        pixels.show();
-      }
-      preferences.putInt("dim", dim);
-    }
-
-    if (doc.containsKey("colour")) {
-      String colour = doc["colour"].as<String>();
-      Serial.println(colour.c_str());
-      if (colour[0] == '#') {
-        colour.remove(0, 1); // Remove the '#' character
-      }
-      if (colour.length() == 6) {
-        long rgb = strtol(colour.c_str(), NULL, 16);
-        r = (rgb >> 16) & 0xFF;
-        g = (rgb >> 8) & 0xFF;
-        b = rgb & 0xFF;
-
-        if (ledState == "ON") {
-          setNeoPixelColor(r, g, b);
-          pixels.show();
-        }
-        preferences.putInt("r", r);
-        preferences.putInt("g", g);
-        preferences.putInt("b", b);
-      }
-    }
   }
-
-  //Similarly add more if statements to check for other subscribed topics 
 }
 
 void loop() {
@@ -339,6 +283,7 @@ void loop() {
         stage = MQTT;
       }
       client.loop();
+      publishStatus();
       break;
   }
 }
