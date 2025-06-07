@@ -5,23 +5,20 @@
 #include <Preferences.h>
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
-#include <Adafruit_NeoPixel.h>
+#include <esp_camera.h>
+#include "Base64.h"
 
-#define LEDPIN 27
-#define PIN 14
+
+/**********  USER‑ADJUSTABLE HARDWARE PINS  **********/
+#define PIRPIN      4      // HC‑SR501 OUT pin → GPIO13
+#define LEDPIN       2       // status LED (kept from your code)
+/******************************************************/
+
 #define ATTEMPTS 5
-#define NUMPIXELS 8
-
-// LIGHT SETUP
-Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-int dim = 10; // Default brightness (max)
-int r = 255, g = 255, b = 255; // Default color (white)
-String ledState = "OFF"; // Default state is OFF
-
-// DEVICE SETUP
-String device_id = "LIGHT1";
+String device_id = "MOTION1";
 String ssid, password, host, HubID, Topic, info;
 String get_info[4];
+
 bool bluetooth_disconnect = false;
 long start_millis;
 long timeout = 10000;
@@ -34,7 +31,10 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 Preferences preferences;
 
-// Function Prototypes
+/*************  MOTION‑CAPTURE FLAGS  *************/
+bool motionDetected = false;   // set in ISR
+
+/*************  FUNCTION PROTOTYPES  *************/
 void initBluetooth();
 void disconnectBluetooth();
 void handleBluetoothData();
@@ -43,18 +43,19 @@ void hard_reset();
 bool initWiFi();
 bool initMQTT();
 void MQTTCallback(char* topic, byte* message, unsigned int length);
-void publishStatus();
-void setNeoPixelColor(int r, int g, int b);
+void publishPicture();
 
-void setNeoPixelColor(int r, int g, int b) {
-  for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, pixels.Color(r, g, b));
-  }
+/*************  ISR FOR PIR SENSOR  *************/
+void IRAM_ATTR PIR_ISR() {
+  motionDetected = true;
 }
 
 void setup(){
   Serial.begin(115200);
   pinMode(LEDPIN, OUTPUT);
+  pinMode(PIRPIN, INPUT_PULLUP);
+  // attach PIR interrupt
+  attachInterrupt(digitalPinToInterrupt(PIRPIN), PIR_ISR, RISING);
 
   //Brownout trigger disabled
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
@@ -70,21 +71,8 @@ void setup(){
   host = preferences.getString("host", "");
   HubID = preferences.getString("HubID", "");
   Topic = preferences.getString("Topic", "");
-  dim = preferences.getInt("dim", 10);
-  r = preferences.getInt("r", 255);
-  g = preferences.getInt("g", 255);
-  b = preferences.getInt("b", 255);
-  ledState = preferences.getString("ledState", "OFF");
-
+ 
   stage = (ssid != "" && password != "" && host != "" && HubID != "" && Topic != "") ? WIFI : PAIRING;
-
-  pixels.begin();
-  pixels.setBrightness(dim);
-  setNeoPixelColor(r, g, b);
-
-  if (ledState == "ON") {
-    pixels.show();
-  }
 }
 
 void initBluetooth()
@@ -189,7 +177,7 @@ bool initMQTT()
     }
     delay(500);
     Serial.print(".");
-    if (client.connect("LIGHT1"))
+    if (client.connect("MOTION1"))
     {
       Serial.println("MQTT Connected!");
       Serial.println(Topic.c_str());
@@ -226,69 +214,13 @@ void MQTTCallback(char* topic, byte* message, unsigned int length)
 
     if (doc.containsKey("status")) {
       String status = doc["status"].as<String>();
-      if (status == "ON") {
-        Serial.println("ON");
-        pixels.setBrightness(dim);
-        setNeoPixelColor(r, g, b);
-        pixels.show();
-        ledState = "ON";
-        preferences.putString("ledState", "ON");
-      }
-      else if (status == "OFF") {
-        Serial.println("OFF");
-        pixels.clear();
-        pixels.show();
-        ledState = "OFF";
-        preferences.putString("ledState", "OFF");
-      }
-      else if (status == "disconnect") {
+      if (status == "disconnect") {
         Serial.println("disconnect");
-        pixels.clear();
-        pixels.show();
         preferences.clear();
         ESP.restart();
       }
     }
-
-    if (doc.containsKey("dim")) {
-      dim = doc["dim"].as<int>();
-      Serial.println(dim);
-      pixels.clear();
-      pixels.setBrightness(dim);
-      setNeoPixelColor(r, g, b);
-      if (ledState == "ON") {
-        pixels.show();
-      }
-      preferences.putInt("dim", dim);
-    }
-
-    if (doc.containsKey("colour")) {
-      String colour = doc["colour"].as<String>();
-      Serial.println(colour.c_str());
-      if (colour[0] == '#') {
-        colour.remove(0, 1); // Remove the '#' character
-      }
-      if (colour.length() == 6) {
-        long rgb = strtol(colour.c_str(), NULL, 16);
-        r = (rgb >> 16) & 0xFF;
-        g = (rgb >> 8) & 0xFF;
-        b = rgb & 0xFF;
-
-        pixels.clear();
-        pixels.setBrightness(dim);
-        setNeoPixelColor(r, g, b);
-
-        if (ledState == "ON") {
-          pixels.show();
-        }
-        preferences.putInt("r", r);
-        preferences.putInt("g", g);
-        preferences.putInt("b", b);
-      }
-    }
   }
-
-  //Similarly add more if statements to check for other subscribed topics 
 }
 
 void loop() {
@@ -346,6 +278,15 @@ void loop() {
         stage = MQTT;
       }
       client.loop();
+      
+      if (motionDetected) {
+        Serial.println("Detected");
+        digitalWrite(LEDPIN, HIGH);
+        delay(1000);
+        digitalWrite(LEDPIN, LOW);
+        motionDetected = false;
+        delay(100);
+      }
       break;
   }
 }

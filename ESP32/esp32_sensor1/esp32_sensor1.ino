@@ -8,8 +8,8 @@
 #include <DHT.h>
 #include <Adafruit_Sensor.h>
 
-#define LEDPIN 4
-#define DHTPIN 2
+#define LEDPIN 2
+#define DHTPIN 14
 #define DHTTYPE DHT11
 #define ATTEMPTS 5
 
@@ -170,7 +170,7 @@ bool initMQTT()
 {
   Serial.println(host);
   client.setServer(host.c_str(), 1883);
-  client.setCallback(MQTTcallback);
+  client.setCallback(MQTTCallback);
   start_millis = millis();
   while (!client.connected())
   {
@@ -198,7 +198,7 @@ bool initMQTT()
   return false;
 }
 
-void MQTTcallback(char* topic, byte* message, unsigned int length) 
+void MQTTCallback(char* topic, byte* message, unsigned int length) 
 {
   String messageTemp;
   

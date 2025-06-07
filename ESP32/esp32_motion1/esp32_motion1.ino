@@ -5,23 +5,38 @@
 #include <Preferences.h>
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
-#include <Adafruit_NeoPixel.h>
+#include <esp_camera.h>
+#include "Base64.h"
 
-#define LEDPIN 27
-#define PIN 14
+
+/**********  USER‑ADJUSTABLE HARDWARE PINS  **********/
+#define PIRPIN      12      // HC‑SR501 OUT pin → GPIO13
+#define LEDPIN       4       // status LED (kept from your code)
+
+/*  ESP32‑CAM (AI‑Thinker) camera pin map  */
+#define PWDN_GPIO_NUM     32
+#define RESET_GPIO_NUM    -1
+#define XCLK_GPIO_NUM      0
+#define SIOD_GPIO_NUM     26
+#define SIOC_GPIO_NUM     27
+#define Y9_GPIO_NUM       35
+#define Y8_GPIO_NUM       34
+#define Y7_GPIO_NUM       39
+#define Y6_GPIO_NUM       36
+#define Y5_GPIO_NUM       21
+#define Y4_GPIO_NUM       19
+#define Y3_GPIO_NUM       18
+#define Y2_GPIO_NUM        5
+#define VSYNC_GPIO_NUM    25
+#define HREF_GPIO_NUM     23
+#define PCLK_GPIO_NUM     22
+/******************************************************/
+
 #define ATTEMPTS 5
-#define NUMPIXELS 8
-
-// LIGHT SETUP
-Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
-int dim = 10; // Default brightness (max)
-int r = 255, g = 255, b = 255; // Default color (white)
-String ledState = "OFF"; // Default state is OFF
-
-// DEVICE SETUP
-String device_id = "LIGHT1";
+String device_id = "MOTION1";
 String ssid, password, host, HubID, Topic, info;
 String get_info[4];
+
 bool bluetooth_disconnect = false;
 long start_millis;
 long timeout = 10000;
@@ -34,7 +49,10 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 Preferences preferences;
 
-// Function Prototypes
+/*************  MOTION‑CAPTURE FLAGS  *************/
+bool motionDetected = false;   // set in ISR
+
+/*************  FUNCTION PROTOTYPES  *************/
 void initBluetooth();
 void disconnectBluetooth();
 void handleBluetoothData();
@@ -43,18 +61,84 @@ void hard_reset();
 bool initWiFi();
 bool initMQTT();
 void MQTTCallback(char* topic, byte* message, unsigned int length);
-void publishStatus();
-void setNeoPixelColor(int r, int g, int b);
+void publishPicture();
+bool initCamera();
 
-void setNeoPixelColor(int r, int g, int b) {
-  for (int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, pixels.Color(r, g, b));
+/*************  ISR FOR PIR SENSOR  *************/
+void IRAM_ATTR PIR_ISR() {
+  motionDetected = true;
+}
+
+/*************  CAMERA INITIALISATION  *************/
+bool initCamera() {
+  camera_config_t config;
+  config.ledc_channel   = LEDC_CHANNEL_0;
+  config.ledc_timer     = LEDC_TIMER_0;
+  config.pin_d0         = Y2_GPIO_NUM;
+  config.pin_d1         = Y3_GPIO_NUM;
+  config.pin_d2         = Y4_GPIO_NUM;
+  config.pin_d3         = Y5_GPIO_NUM;
+  config.pin_d4         = Y6_GPIO_NUM;
+  config.pin_d5         = Y7_GPIO_NUM;
+  config.pin_d6         = Y8_GPIO_NUM;
+  config.pin_d7         = Y9_GPIO_NUM;
+  config.pin_xclk       = XCLK_GPIO_NUM;
+  config.pin_pclk       = PCLK_GPIO_NUM;
+  config.pin_vsync      = VSYNC_GPIO_NUM;
+  config.pin_href       = HREF_GPIO_NUM;
+  config.pin_sccb_sda   = SIOD_GPIO_NUM;
+  config.pin_sccb_scl   = SIOC_GPIO_NUM;
+  config.pin_pwdn       = PWDN_GPIO_NUM;
+  config.pin_reset      = RESET_GPIO_NUM;
+  config.xclk_freq_hz   = 20000000;
+  config.pixel_format   = PIXFORMAT_JPEG;
+  // Frame parameters – trade quality vs. size as needed
+  config.frame_size     = FRAMESIZE_QVGA;
+  config.jpeg_quality   = 12;          // 0–63 (lower = better quality)
+  config.fb_count       = 1;
+
+  esp_err_t err = esp_camera_init(&config);
+  if (err != ESP_OK) {
+    return false;
+  }
+  return true;
+}
+
+/*************  MQTT PAYLOAD PUBLISHER  *************/
+void publishPicture() {
+  camera_fb_t* fb = esp_camera_fb_get();
+  if (!fb) {
+    return;
+  }
+
+  JsonDocument doc; 
+
+  // Encode to Base64
+  String base64Image = base64::encode(fb->buf, fb->len);
+  esp_camera_fb_return(fb); // Free memory
+
+  doc["type"] = "motion";
+  doc["image"] = base64Image;
+
+  String jsonBuffer;
+  serializeJson(doc, jsonBuffer);
+ 
+  // Publish the entire payload at once
+  bool success = client.publish(Topic.c_str(), jsonBuffer.c_str());
+  
+  if (success) {
+    Serial.println("Image published successfully");
+  } else {
+    Serial.println("Failed to publish image");
   }
 }
 
 void setup(){
   Serial.begin(115200);
   pinMode(LEDPIN, OUTPUT);
+  pinMode(PIRPIN, INPUT_PULLUP);
+  // attach PIR interrupt
+  attachInterrupt(digitalPinToInterrupt(PIRPIN), PIR_ISR, RISING);
 
   //Brownout trigger disabled
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
@@ -70,21 +154,8 @@ void setup(){
   host = preferences.getString("host", "");
   HubID = preferences.getString("HubID", "");
   Topic = preferences.getString("Topic", "");
-  dim = preferences.getInt("dim", 10);
-  r = preferences.getInt("r", 255);
-  g = preferences.getInt("g", 255);
-  b = preferences.getInt("b", 255);
-  ledState = preferences.getString("ledState", "OFF");
-
+ 
   stage = (ssid != "" && password != "" && host != "" && HubID != "" && Topic != "") ? WIFI : PAIRING;
-
-  pixels.begin();
-  pixels.setBrightness(dim);
-  setNeoPixelColor(r, g, b);
-
-  if (ledState == "ON") {
-    pixels.show();
-  }
 }
 
 void initBluetooth()
@@ -189,7 +260,7 @@ bool initMQTT()
     }
     delay(500);
     Serial.print(".");
-    if (client.connect("LIGHT1"))
+    if (client.connect("MOTION1"))
     {
       Serial.println("MQTT Connected!");
       Serial.println(Topic.c_str());
@@ -226,69 +297,13 @@ void MQTTCallback(char* topic, byte* message, unsigned int length)
 
     if (doc.containsKey("status")) {
       String status = doc["status"].as<String>();
-      if (status == "ON") {
-        Serial.println("ON");
-        pixels.setBrightness(dim);
-        setNeoPixelColor(r, g, b);
-        pixels.show();
-        ledState = "ON";
-        preferences.putString("ledState", "ON");
-      }
-      else if (status == "OFF") {
-        Serial.println("OFF");
-        pixels.clear();
-        pixels.show();
-        ledState = "OFF";
-        preferences.putString("ledState", "OFF");
-      }
-      else if (status == "disconnect") {
+      if (status == "disconnect") {
         Serial.println("disconnect");
-        pixels.clear();
-        pixels.show();
         preferences.clear();
         ESP.restart();
       }
     }
-
-    if (doc.containsKey("dim")) {
-      dim = doc["dim"].as<int>();
-      Serial.println(dim);
-      pixels.clear();
-      pixels.setBrightness(dim);
-      setNeoPixelColor(r, g, b);
-      if (ledState == "ON") {
-        pixels.show();
-      }
-      preferences.putInt("dim", dim);
-    }
-
-    if (doc.containsKey("colour")) {
-      String colour = doc["colour"].as<String>();
-      Serial.println(colour.c_str());
-      if (colour[0] == '#') {
-        colour.remove(0, 1); // Remove the '#' character
-      }
-      if (colour.length() == 6) {
-        long rgb = strtol(colour.c_str(), NULL, 16);
-        r = (rgb >> 16) & 0xFF;
-        g = (rgb >> 8) & 0xFF;
-        b = rgb & 0xFF;
-
-        pixels.clear();
-        pixels.setBrightness(dim);
-        setNeoPixelColor(r, g, b);
-
-        if (ledState == "ON") {
-          pixels.show();
-        }
-        preferences.putInt("r", r);
-        preferences.putInt("g", g);
-        preferences.putInt("b", b);
-      }
-    }
   }
-
-  //Similarly add more if statements to check for other subscribed topics 
 }
 
 void loop() {
@@ -312,6 +327,7 @@ void loop() {
     case WIFI:
       Serial.println("Connecting to Wi-Fi...");
       if (initWiFi()) {
+        if (!initCamera()) { hard_reset(); }
         stage = MQTT;
       }
       else {
@@ -346,6 +362,15 @@ void loop() {
         stage = MQTT;
       }
       client.loop();
+      
+      if (motionDetected) {
+        publishPicture();
+        digitalWrite(LEDPIN, HIGH);
+        delay(1000);
+        digitalWrite(LEDPIN, LOW);
+        motionDetected = false;
+        delay(100);
+      }
       break;
   }
 }
