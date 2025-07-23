@@ -13,15 +13,17 @@ class VoiceAssistant:
         self.recognizer = sr.Recognizer()
         self.device_manager = device_manager
         self.room_manager = room_manager
-        self.loop = asyncio.get_running_loop()
         self.running = False
         self.thread = None
+        self.main_loop = None
         self.client = genai.Client(api_key=google_api_key)  
 
     def start_voice_assistant(self):
         """Start the voice assistant in a separate thread"""
         if self.thread is None or not self.thread.is_alive():
             self.running = True
+            # Store the main event loop before starting the thread
+            self.main_loop = asyncio.get_event_loop()
             self.thread = threading.Thread(target=self.run, daemon=True)
             self.thread.start()
             print("Voice assistant started in background thread")
@@ -40,12 +42,16 @@ class VoiceAssistant:
     def run(self):
         """Main loop for the voice assistant running in a separate thread"""
         while self.running:
-            if self.listen_for_wake_word():
-                command = self.listen()
-                if command:
-                    self.execute_command(command)
+            try:
+                if self.listen_for_wake_word():
+                    command = self.listen()
+                    if command:
+                        self.execute_command(command)
+            except Exception as e:
+                print(f"Error in voice assistant: {e}")
+                time.sleep(0.2)
             # Small sleep to prevent CPU hogging
-            time.sleep(0.1)
+            time.sleep(0.2)
 
     def speak(self, text):
         tts = gTTS(text=text, lang='en')
@@ -58,7 +64,6 @@ class VoiceAssistant:
 
     def listen_for_wake_word(self):
         with sr.Microphone(device_index=1) as source:
-            print("Listening for wake word...")
             self.recognizer.adjust_for_ambient_noise(source)
             audio = self.recognizer.listen(source)
 
@@ -87,6 +92,9 @@ class VoiceAssistant:
                 print("Could not understand the audio")
                 self.speak("Sorry, I could not understand the command")
                 return None
+            except sr.RequestError as e:
+                print(f"Error in Google Speech Recognition: {e}")
+                return None 
 
     def execute_command(self, command):
         if not command:
@@ -131,7 +139,7 @@ class VoiceAssistant:
                         # Get devices in the room to validate device exists in this room
                         future = asyncio.run_coroutine_threadsafe(
                             self.room_manager.get_devices_in_room(room),
-                            self.loop
+                            self.main_loop
                         )
                         devices_in_room = future.result()
                         device_names_in_room = [device_name for device_name, _ in devices_in_room]
@@ -141,7 +149,7 @@ class VoiceAssistant:
                             # Send the command to the main event loop
                             future = asyncio.run_coroutine_threadsafe(
                                 self.device_manager.control_device(action_data, device),
-                                self.loop
+                                self.main_loop
                             )
                             future.result()
                             self.speak(f"Turning {action} {device.upper()} in {room}")

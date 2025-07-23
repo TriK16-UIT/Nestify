@@ -15,7 +15,7 @@ class RoomManager:
         self.firebase_handler.stream("Room", self.room_listener_callback)
 
     async def get_devices_in_room(self, room_name):
-        room_id = next(room_id for room_id, name in self.list_of_rooms if name == room_name)
+        room_id = next(room_id for room_id, name in self.list_of_rooms if name.lower() == room_name.lower())
         
         # Retrieve devices from Firebase that belong to this room
         devices = await self.firebase_handler.get_data("Device")
@@ -68,12 +68,10 @@ class RoomManager:
         room_id = path_parts[0]
         room_entry = next((entry for entry in self.list_of_rooms if entry[0] == room_id), None)
 
-        if not room_entry:
-            return
-
         if event == "put":
             if data is None:  # Room deleted
-                self.list_of_rooms.remove(room_entry)
+                if room_entry:
+                    self.list_of_rooms.remove(room_entry)
             elif len(path_parts) == 1:  # Room added or full update
                 if data.get('HubID') == HUB_ID:
                     room_name = data.get('name')
@@ -84,10 +82,19 @@ class RoomManager:
                         self.list_of_rooms.append((room_id, room_name))
 
         elif event == "patch":
-            if len(path_parts) > 1:
-                attribute = path_parts[1]
-                if attribute == "name" and isinstance(data, str):
-                    # Room name changed
+            if len(path_parts) == 1:
+                # Handle room creation or update
+                if isinstance(data, dict) and 'name' in data:
+                    room_name = data.get('name')
+                    
+                    # For new rooms, verify HubID matches
+                    if not room_entry and data.get('HubID') != HUB_ID:
+                        return
+                        
+                    # Remove old entry if it exists
                     if room_entry:
                         self.list_of_rooms.remove(room_entry)
-                        self.list_of_rooms.append((room_id, data))
+                        
+                    # Add the room to our list
+                    self.list_of_rooms.append((room_id, room_name))
+        print("List of rooms: ", self.list_of_rooms)

@@ -24,4 +24,24 @@ class StorageHandler:
             file_data=image_data,
             content_type="image/jpeg"
         )
+
+    async def delete_images(self, device_id):
+        prefix = f"images/{device_id}/"
+        params = {"prefix": prefix}
+
+        data = await self.storage.list_objects(
+                bucket=self.bucket_name,
+                params=params
+            )
+
+        if "items" in data:
+            for item in data["items"]:
+                if "name" in item:
+                    # Delete each image
+                    await self.storage.delete(
+                        bucket=self.bucket_name,
+                        object_name=item["name"]
+                    )
+
+
             

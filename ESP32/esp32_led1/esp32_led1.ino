@@ -7,7 +7,8 @@
 #include "soc/rtc_cntl_reg.h"
 #include <Adafruit_NeoPixel.h>
 
-#define LEDPIN 27
+#define LEDPIN 2
+#define RESETPIN 33
 #define PIN 14
 #define ATTEMPTS 5
 #define NUMPIXELS 8
@@ -34,6 +35,11 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 Preferences preferences;
 
+/*************  RESET BUTTON FLAGS  *************/
+volatile bool resetPressed = false;
+volatile unsigned long lastResetPress = 0;
+const unsigned long debounceDelay = 50;
+
 // Function Prototypes
 void initBluetooth();
 void disconnectBluetooth();
@@ -46,6 +52,15 @@ void MQTTCallback(char* topic, byte* message, unsigned int length);
 void publishStatus();
 void setNeoPixelColor(int r, int g, int b);
 
+/*************  ISR FOR RESET BUTTON  *************/
+void IRAM_ATTR RESET_ISR() {
+  unsigned long currentTime = millis();
+  if (currentTime - lastResetPress > debounceDelay) {
+    resetPressed = true;
+    lastResetPress = currentTime;
+  }
+}
+
 void setNeoPixelColor(int r, int g, int b) {
   for (int i = 0; i < NUMPIXELS; i++) {
     pixels.setPixelColor(i, pixels.Color(r, g, b));
@@ -55,14 +70,17 @@ void setNeoPixelColor(int r, int g, int b) {
 void setup(){
   Serial.begin(115200);
   pinMode(LEDPIN, OUTPUT);
+  pinMode(RESETPIN, INPUT_PULLUP);  // Reset button with internal pullup
 
   //Brownout trigger disabled
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
 
+  attachInterrupt(digitalPinToInterrupt(RESETPIN), RESET_ISR, FALLING);
+
   // Initialize preferences
   preferences.begin("config", false);
   // For debugging
-  preferences.clear();
+  // preferences.clear();
 
   // Load stored values
   ssid = preferences.getString("ssid", "");
@@ -146,8 +164,32 @@ void clearBluetoothData() {
 }
 
 void hard_reset() {
+  pixels.clear();
+  pixels.show();
+  
+  // If MQTT is connected, announce reset to Hub
+  if (client.connected() && stage == CONNECTED) {
+    Serial.println("Announcing reset to Hub...");
+    JsonDocument resetDoc;
+    resetDoc["status"] = "reset";
+    resetDoc["type"] = "toggle";
+    String resetMessage;
+    serializeJson(resetDoc, resetMessage);
+    
+    client.publish(Topic.c_str(), resetMessage.c_str());
+    client.loop(); // Ensure message is sent
+    delay(500);    // Give time for message to be transmitted
+  }
+  else if (!bluetooth_disconnect) {
+    Serial.println("Announcing reset to Hub...");
+    SerialBT.print("Error: Hard reset triggered|");
+    delay(500);
+  }
+  
   disconnectBluetooth();
   preferences.clear();
+  Serial.println("Performing hard reset...");
+  delay(1000);
   ESP.restart();
 }
 
@@ -293,6 +335,14 @@ void MQTTCallback(char* topic, byte* message, unsigned int length)
 
 void loop() {
   delay(20);
+
+  // Check for reset button press
+  if (resetPressed) {
+    resetPressed = false;
+    Serial.println("Reset button pressed - performing hard reset");
+    hard_reset();
+  }
+
   static int wifi_attempts = 0;
   static int mqtt_attempts = 0;
   switch (stage)

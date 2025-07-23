@@ -10,8 +10,9 @@
 
 
 /**********  USER‑ADJUSTABLE HARDWARE PINS  **********/
-#define PIRPIN      12      // HC‑SR501 OUT pin → GPIO13
-#define LEDPIN       4       // status LED (kept from your code)
+#define PIRPIN       2      // HC‑SR501 OUT pin → GPIO2
+#define LEDPIN       4      // status LED
+#define RESETPIN     12     // Reset button pin → GPIO15
 
 /*  ESP32‑CAM (AI‑Thinker) camera pin map  */
 #define PWDN_GPIO_NUM     32
@@ -51,6 +52,12 @@ Preferences preferences;
 
 /*************  MOTION‑CAPTURE FLAGS  *************/
 bool motionDetected = false;   // set in ISR
+String motionState = "OFF";     // Motion detection state: "ON" or "OFF"
+
+/*************  RESET BUTTON FLAGS  *************/
+volatile bool resetPressed = false;
+volatile unsigned long lastResetPress = 0;
+const unsigned long debounceDelay = 50;
 
 /*************  FUNCTION PROTOTYPES  *************/
 void initBluetooth();
@@ -66,7 +73,18 @@ bool initCamera();
 
 /*************  ISR FOR PIR SENSOR  *************/
 void IRAM_ATTR PIR_ISR() {
-  motionDetected = true;
+  if (motionState == "ON") {
+    motionDetected = true;
+  }
+}
+
+/*************  ISR FOR RESET BUTTON  *************/
+void IRAM_ATTR RESET_ISR() {
+  unsigned long currentTime = millis();
+  if (currentTime - lastResetPress > debounceDelay) {
+    resetPressed = true;
+    lastResetPress = currentTime;
+  }
 }
 
 /*************  CAMERA INITIALISATION  *************/
@@ -94,7 +112,7 @@ bool initCamera() {
   config.pixel_format   = PIXFORMAT_JPEG;
   // Frame parameters – trade quality vs. size as needed
   config.frame_size     = FRAMESIZE_QVGA;
-  config.jpeg_quality   = 12;          // 0–63 (lower = better quality)
+  config.jpeg_quality   = 40;          // 0–63 (lower = better quality)
   config.fb_count       = 1;
 
   esp_err_t err = esp_camera_init(&config);
@@ -136,9 +154,13 @@ void publishPicture() {
 void setup(){
   Serial.begin(115200);
   pinMode(LEDPIN, OUTPUT);
-  pinMode(PIRPIN, INPUT_PULLUP);
+  pinMode(PIRPIN, INPUT);
+  pinMode(RESETPIN, INPUT_PULLUP);  // Reset button with internal pullup
+  
   // attach PIR interrupt
   attachInterrupt(digitalPinToInterrupt(PIRPIN), PIR_ISR, RISING);
+  // attach Reset button interrupt
+  attachInterrupt(digitalPinToInterrupt(RESETPIN), RESET_ISR, FALLING);
 
   //Brownout trigger disabled
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
@@ -154,8 +176,13 @@ void setup(){
   host = preferences.getString("host", "");
   HubID = preferences.getString("HubID", "");
   Topic = preferences.getString("Topic", "");
+  motionState = preferences.getString("motionState", "ON");  // Load motion state
  
   stage = (ssid != "" && password != "" && host != "" && HubID != "" && Topic != "") ? WIFI : PAIRING;
+
+  client.setBufferSize(16384);
+  
+  Serial.println("Motion State: " + motionState);
 }
 
 void initBluetooth()
@@ -217,10 +244,32 @@ void clearBluetoothData() {
 }
 
 void hard_reset() {
+  // If MQTT is connected, announce reset to Hub
+  if (client.connected() && stage == CONNECTED) {
+    Serial.println("Announcing reset to Hub...");
+    JsonDocument resetDoc;
+    resetDoc["status"] = "reset";
+    resetDoc["type"] = "motion";
+    String resetMessage;
+    serializeJson(resetDoc, resetMessage);
+    
+    client.publish(Topic.c_str(), resetMessage.c_str());
+    client.loop(); // Ensure message is sent
+    delay(500);    // Give time for message to be transmitted
+  }
+  else if (!bluetooth_disconnect) {
+    Serial.println("Announcing reset to Hub...");
+    SerialBT.print("Error: Hard reset triggered|");
+    delay(500);
+  }
+  
   disconnectBluetooth();
   preferences.clear();
+  Serial.println("Performing hard reset...");
+  delay(1000);
   ESP.restart();
 }
+
 
 bool initWiFi()
 {
@@ -288,19 +337,31 @@ void MQTTCallback(char* topic, byte* message, unsigned int length)
     StaticJsonDocument<200> doc;
     DeserializationError error = deserializeJson(doc, messageTemp);
 
-    Serial.println(messageTemp);
+    Serial.println("Received: " + messageTemp);
 
     if (error) {
       Serial.println("Error parsing JSON!");
       return;
     }
 
+    // Handle status commands
     if (doc.containsKey("status")) {
       String status = doc["status"].as<String>();
+      
       if (status == "disconnect") {
-        Serial.println("disconnect");
+        Serial.println("Received disconnect command");
         preferences.clear();
         ESP.restart();
+      }
+      else if (status == "ON") {
+        motionState = "ON";
+        preferences.putString("motionState", motionState);
+        Serial.println("Motion detection ENABLED");
+      }
+      else if (status == "OFF") {
+        motionState = "OFF";
+        preferences.putString("motionState", motionState);
+        Serial.println("Motion detection DISABLED");
       }
     }
   }
@@ -308,6 +369,14 @@ void MQTTCallback(char* topic, byte* message, unsigned int length)
 
 void loop() {
   delay(20);
+  
+  // Check for reset button press
+  if (resetPressed) {
+    resetPressed = false;
+    Serial.println("Reset button pressed - performing hard reset");
+    hard_reset();
+  }
+  
   static int wifi_attempts = 0;
   static int mqtt_attempts = 0;
   switch (stage)
@@ -363,7 +432,9 @@ void loop() {
       }
       client.loop();
       
-      if (motionDetected) {
+      // Only process motion if motion detection is enabled
+      if (motionDetected && motionState == "ON") {
+        Serial.println("Motion detected - capturing image");
         publishPicture();
         digitalWrite(LEDPIN, HIGH);
         delay(1000);
@@ -371,7 +442,11 @@ void loop() {
         motionDetected = false;
         delay(100);
       }
+      else if (motionDetected && motionState == "OFF") {
+        // Clear the flag even if motion detection is disabled
+        motionDetected = false;
+        Serial.println("Motion detected but motion capture is disabled");
+      }
       break;
   }
 }
-

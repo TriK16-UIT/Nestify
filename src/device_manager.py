@@ -50,7 +50,6 @@ class DeviceManager:
             else:
                 break
         base_name = base_name.upper()
-        print(self.list_of_devices)
         device_count = sum(1 for device in self.list_of_devices if device[1].startswith(base_name))
         unique_device_name = f"{base_name} {device_count + 1}"
 
@@ -64,7 +63,7 @@ class DeviceManager:
             'room_id': NOROOM_ID
         }
 
-        if device_type == 'toggle':
+        if device_type == 'toggle' or device_type == 'motion':
             new_device_data['status'] = "OFF"
 
         if "light" in device_id.lower():
@@ -93,10 +92,20 @@ class DeviceManager:
             })
             await self.mqtt_handler.publish(topic, payload)
 
+        if "motion" in device_id.lower():
+            payload = json.dumps({
+                "status": new_device_data['status'],
+            })
+            await self.mqtt_handler.publish(topic, payload)
+
         self.list_of_devices.append((device_id, unique_device_name))
 
     async def handle_toggle_device_message(self, topic, payload):
         device_id = topic.split('/')[-1]
+
+        if payload.get('status') == 'reset':
+            await self.handle_device_reset(device_id, 'toggle')
+            return
 
         await self.firebase_handler.update_data(f'Device/{device_id}', payload)
 
@@ -108,10 +117,18 @@ class DeviceManager:
     async def handle_sensor_device_message(self, topic, payload):
         device_id = topic.split('/')[-1]
 
+        if payload.get('status') == 'reset':
+            await self.handle_device_reset(device_id, 'sensor')
+            return
+
         await self.firebase_handler.update_data(f'Device/{device_id}', payload)
 
     async def handle_motion_device_message(self, topic, payload):
         device_id = topic.split('/')[-1]
+
+        if payload.get('status') == 'reset':
+            await self.handle_device_reset(device_id, 'motion')
+            return
 
         image_data = payload.pop('image', None)
 
@@ -121,11 +138,28 @@ class DeviceManager:
             image_path = f"images/{device_id}/{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.jpg"
             await self.storage_handler.upload_image(image_path, image_data)
 
+    async def handle_device_reset(self, device_id, device_type):
+        device_entry = next((entry for entry in self.list_of_devices if entry[0] == device_id), None)
+        if not device_entry:
+            return
+
+        await self.logging_handler.add_log("info", f"Received reset signal from device {device_id}")
+
+        if device_type == 'motion':
+            await self.storage_handler.delete_images(device_id)
+            await self.logging_handler.add_log("info", f"Deleted all images for motion device {device_id}")
+
+        await self.firebase_handler.delete_data(f'Device/{device_id}')
+
     async def device_listener(self, message):
         event = message["event"]
         path = message["path"]
         data = message["data"]
         path_parts = path.strip('/').split('/')
+
+        print(event)
+        print(path)
+        print(data)
         
         if not path_parts:
             return
@@ -139,8 +173,17 @@ class DeviceManager:
 
         if event == "patch":
             await self.logging_handler.add_log("info", f"Update with {data} to Device {device_id}")
-            payload = json.dumps(data)
-            await self.mqtt_handler.publish(topic, payload)
+            
+            mqtt_payload = {}
+            for key, value in data.items():
+                if key in ["status", "dim", "colour", "speed"]:
+                    mqtt_payload[key] = value
+                elif key == "device_name" and isinstance(value, str):
+                    self.list_of_devices.remove(device_entry)
+                    self.list_of_devices.append((device_id, value))
+            
+            if mqtt_payload:
+                await self.mqtt_handler.publish(topic, json.dumps(mqtt_payload))
 
         elif data is None:  # Deletion
             # Send disconnect before cleanup
@@ -148,6 +191,7 @@ class DeviceManager:
             await self.mqtt_handler.publish(topic, json.dumps({"status": "disconnect"}))
             self.list_of_devices.remove(device_entry)
             await self.mqtt_handler.unsubscribe(topic)
+            await self.firebase_handler.delete_data(f'Device/{device_id}')
 
         elif len(path_parts) > 1:
             attribute = path_parts[1]
@@ -159,6 +203,7 @@ class DeviceManager:
             elif attribute == "device_name" and isinstance(data, str):
                 self.list_of_devices.remove(device_entry)
                 self.list_of_devices.append((device_id, data))
+        print("List of devices: ", self.list_of_devices)
 
     async def control_device(self, action, device_name, is_id=False):
         try:
@@ -172,5 +217,7 @@ class DeviceManager:
             # Update multiple fields in Firebase
             await self.firebase_handler.update_data(f'Device/{chosen_id}', action)
 
+        except Exception as e:
+            pass
         except StopIteration:
             pass

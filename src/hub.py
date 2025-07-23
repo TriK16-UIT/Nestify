@@ -82,19 +82,13 @@ async def main():
     device_manager = DeviceManager(mqtt_handler, storage_handler, firebase_handler, logging_handler)
     room_manager = RoomManager(firebase_handler)
 
-    # Initialize the voice assistant with the current event loop
     voice_assistant = VoiceAssistant(GOOGLE_API_KEY, device_manager, room_manager)
     
 
     try:
-        # Start the voice assistant in a separate thread
         voice_assistant.start_voice_assistant()
         
-        # Start listening for commands
         await listen_for_commands(firebase_handler, bluetooth_handler, logging_handler, device_manager, room_manager)
-    
-        while True:
-            await asyncio.sleep(1)
     except KeyboardInterrupt:
         voice_assistant.stop_voice_assistant()
 

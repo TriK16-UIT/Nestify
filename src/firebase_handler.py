@@ -27,6 +27,10 @@ class FirebaseHandler:
         ref = self.get_reference(path)
         return await ref.update(data)
 
+    async def delete_data(self, path):
+        ref = self.get_reference(path)
+        return await ref.remove()
+
     async def get_scenarios(self, hub_id):
         all_scenarios = await self.get_data("Scenarios")
         if all_scenarios.val() is None:

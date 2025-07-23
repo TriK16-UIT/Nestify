@@ -39,8 +39,9 @@ class MQTTHandler:
             async for message in self.client.messages:
                 topic = message.topic.value
                 payload = message.payload.decode('utf-8')
-                print(topic)
-                print(payload)
+                if 'humid' not in payload and 'temperature' not in payload:
+                    print(topic)
+                    print(payload)
                 if 'type' in payload:
                     payload = json.loads(payload)
                     if payload['type'] in self.message_handlers:
