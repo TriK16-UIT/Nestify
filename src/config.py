@@ -1,9 +1,5 @@
 # config.py
 
-# FIREBASE_CREDENTIALS_PATH = "credentials/tri-credentialkey.json"
-# FIREBASE_DATABASE_URL = "https://home-automation-f869d-default-rtdb.asia-southeast1.firebasedatabase.app/"
-# FIREBASE_API_KEY = "AIzaSyBQMoP4uoWd7bwZBYcWy7NZ59lqN0gp1C4"
-
 # TIA FIREBASE
 FIREBASE_CREDENTIALS_PATH = "credentials/credentialkey.json"
 FIREBASE_DATABASE_URL = "https://home-automation-raspi-default-rtdb.firebaseio.com/"
